@@ -3,7 +3,9 @@ const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -47,8 +49,7 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             name: '[name]_[contenthash].[ext]',
-                            esModule: false,
-                            limit: 1024
+                            esModule: false
                         }
                     }
                 ],
@@ -58,7 +59,10 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     {
-                        loader: 'style-loader'
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: process.env.NODE_ENV !== 'production'
+                        }
                     },
                     {
                         loader: 'css-loader'
@@ -69,10 +73,16 @@ module.exports = {
                 test: /\.s[ac]ss$/,
                 use: [
                     {
-                        loader: 'style-loader'
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: process.env.NODE_ENV !== 'production'
+                        }
                     },
                     {
-                        loader: 'css-loader'
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1
+                        }
                     },
                     {
                         loader: 'sass-loader'
@@ -83,10 +93,16 @@ module.exports = {
                 test: /\.less$/,
                 use: [
                     {
-                        loader: 'style-loader'
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: process.env.NODE_ENV !== 'production'
+                        }
                     },
                     {
-                        loader: 'css-loader'
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1
+                        }
                     },
                     {
                         loader: 'less-loader',
@@ -112,7 +128,6 @@ module.exports = {
     plugins: [
         new webpack.ProgressPlugin(),
         new CleanWebpackPlugin({
-            verbose: true,
             cleanStaleWebpackAssets: false
         }),
         new CopyWebpackPlugin({
@@ -121,12 +136,7 @@ module.exports = {
                     from: resolve(__dirname, 'src', 'manifest.json'),
                     to: resolve(__dirname, 'build'),
                     transform(content) {
-                        return Buffer.from(JSON.stringify({
-                            name: process.env.npm_package_name,
-                            description: process.env.npm_package_description,
-                            version: process.env.npm_package_version,
-                            ...JSON.parse(content)
-                        }));
+                        return Buffer.from(JSON.stringify(JSON.parse(content)));
                     }
                 }
             ]
@@ -146,7 +156,10 @@ module.exports = {
                 title: 'Alora Portal'
             },
             filename: 'portal.html',
-            chunks: ['portal']
+            chunks: ['portal'],
+            minify: {
+                collapseWhitespace: true
+            }
         }),
         new HtmlWebpackPlugin({
             template: resolve(__dirname, 'src', 'html', 'template.ejs'),
@@ -154,15 +167,18 @@ module.exports = {
                 title: 'Alora Portal Stash'
             },
             filename: 'stash.html',
-            chunks: ['stash']
+            chunks: ['stash'],
+            minify: {
+                collapseWhitespace: true
+            }
         }),
-        // new ChromeExtensionReloader({
-        //     port: 9090,
-        //     reloadPage: true,
-        //     entries: {
-        //         contentScript: 'content',
-        //         background: 'background'
-        //     }
-        // })
-    ]
+        new MiniCssExtractPlugin()
+    ],
+    optimization: {
+        minimize: process.env.NODE_ENV === 'production',
+        minimizer: [
+            new TerserPlugin(),
+            new CssMinimizerPlugin()
+        ]
+    }
 };
