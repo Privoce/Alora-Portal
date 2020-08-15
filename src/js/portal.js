@@ -70,7 +70,7 @@ class WorkspacePanel extends React.Component {
             <div id={this.props.id}>
                 <PageHeader
                     onBack={false}
-                    title={"Tab Manager"}
+                    title={"Alora Portal"}
                     subTitle={"demo version"}
                     extra={
                         <>
