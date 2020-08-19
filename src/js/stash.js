@@ -31,7 +31,7 @@ class App extends React.Component {
         return (
             <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={<span>This window contains all the hidden tabs. Please do not close it.</span>}
+                description={<span>This window contains all the hidden tabs. Please do not close it. </span>}
             />
         )
     }

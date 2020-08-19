@@ -1,29 +1,41 @@
 const {resolve} = require('path');
-const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const WebpackBar = require('webpackbar');
+const {argv} = require('yargs');
+const {PROJECT_ROOT} = require('./env');
+
+const isDev = argv.mode !== 'production';
+
+const babelOptions = {
+    presets: [
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    chrome: '80'
+                }
+            }
+        ],
+        '@babel/preset-react'
+    ],
+    plugins: [
+        'react-hot-loader/babel'
+    ]
+};
 
 module.exports = {
     entry: {
-        portal: resolve(__dirname, 'src', 'js', 'portal.js'),
-        stash: resolve(__dirname, 'src', 'js', 'stash.js'),
-        background: resolve(__dirname, 'src', 'js', 'background.js')
+        portal: [resolve(PROJECT_ROOT, 'src/js/portal.js')],
+        stash: [resolve(PROJECT_ROOT, 'src/js/stash.js')],
+        background: [resolve(PROJECT_ROOT, 'src/js/background.js')]
     },
     output: {
-        path: resolve(__dirname, 'build'),
-        filename: '[name].bundle.js'
-    },
-    devtool: 'cheap-module-source-map',
-    devServer: {
-        contentBase: resolve(__dirname, 'build'),
-        hot: true,
-        port: 8080,
-        disableHostCheck: true,
-        writeToDisk: true
+        publicPath: '/',
+        path: resolve(PROJECT_ROOT, 'build'),
+        filename: '[name].js'
     },
     module: {
         rules: [
@@ -32,12 +44,26 @@ module.exports = {
                 use: [
                     {
                         loader: 'babel-loader',
-                        options: {
-                            presets: [
-                                '@babel/preset-env',
-                                '@babel/preset-react'
-                            ]
-                        }
+                        options: babelOptions
+                    },
+                    {
+                        loader: 'eslint-loader'
+                    }
+                ],
+                exclude: /node_modules/
+            },
+            {
+                test: /\.tsx?$/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: babelOptions
+                    },
+                    {
+                        loader:'ts-loader'
+                    },
+                    {
+                        loader: 'eslint-loader'
                     }
                 ],
                 exclude: /node_modules/
@@ -52,8 +78,7 @@ module.exports = {
                             esModule: false
                         }
                     }
-                ],
-                exclude: /node_modules/
+                ]
             },
             {
                 test: /\.css$/,
@@ -61,7 +86,7 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            hmr: process.env.NODE_ENV !== 'production'
+                            hmr: isDev
                         }
                     },
                     {
@@ -75,7 +100,7 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            hmr: process.env.NODE_ENV !== 'production'
+                            hmr: isDev
                         }
                     },
                     {
@@ -95,7 +120,7 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            hmr: process.env.NODE_ENV !== 'production'
+                            hmr: isDev
                         }
                     },
                     {
@@ -120,23 +145,27 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        alias: {
-            'react-dom': '@hot-loader/react-dom'
-        }
-    },
     plugins: [
-        new webpack.ProgressPlugin(),
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: false
         }),
+        new WebpackBar({
+            color: isDev ? '#fff300' : '#00fff7'
+        }),
+        new MiniCssExtractPlugin(),
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: resolve(__dirname, 'src', 'manifest.json'),
-                    to: resolve(__dirname, 'build'),
-                    transform(content) {
-                        return Buffer.from(JSON.stringify(JSON.parse(content)));
+                    from: resolve(PROJECT_ROOT, 'src/manifest.json'),
+                    to: resolve(PROJECT_ROOT, 'build'),
+                    transform(data) {
+                        let content = JSON.parse(data);
+                        if (isDev) {
+                            content['content_security_policy'] =
+                                (content['content_security_policy'] || '') +
+                                'script-src \'self\' \'unsafe-eval\';object-src \'self\';';
+                        }
+                        return Buffer.from(JSON.stringify(content));
                     }
                 }
             ]
@@ -144,14 +173,14 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: resolve(__dirname, 'public'),
-                    to: resolve(__dirname, 'build'),
+                    from: resolve(PROJECT_ROOT, 'public'),
+                    to: resolve(PROJECT_ROOT, 'build'),
                     flatten: true
                 }
             ]
         }),
         new HtmlWebpackPlugin({
-            template: resolve(__dirname, 'src', 'html', 'template.ejs'),
+            template: resolve(PROJECT_ROOT, 'src/html/template.ejs'),
             templateParameters: {
                 title: 'Alora Portal'
             },
@@ -162,7 +191,7 @@ module.exports = {
             }
         }),
         new HtmlWebpackPlugin({
-            template: resolve(__dirname, 'src', 'html', 'template.ejs'),
+            template: resolve(PROJECT_ROOT, 'src/html/template.ejs'),
             templateParameters: {
                 title: 'Alora Portal Stash'
             },
@@ -171,14 +200,13 @@ module.exports = {
             minify: {
                 collapseWhitespace: true
             }
-        }),
-        new MiniCssExtractPlugin()
+        })
     ],
-    optimization: {
-        minimize: process.env.NODE_ENV === 'production',
-        minimizer: [
-            new TerserPlugin(),
-            new CssMinimizerPlugin()
-        ]
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        mainFiles: ['index'],
+        alias: {
+            'react-dom': '@hot-loader/react-dom'
+        }
     }
 };

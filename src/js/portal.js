@@ -4,12 +4,21 @@ import {Avatar, Button, List, PageHeader, Popover, Tabs} from 'antd';
 import 'antd/dist/antd.less';
 import '../css/portal.less'
 import {v4 as uuidv4} from 'uuid';
+import PropTypes from 'prop-types';
 
 const {TabPane} = Tabs;
 
 class HistoryEntryButton extends React.Component {
     constructor(props) {
         super(props);
+    }
+    
+    static get propTypes() {
+        return {
+            domain: PropTypes.string,
+            faviconUrl: PropTypes.string,
+            historyItems: PropTypes.array
+        };
     }
 
     render() {
@@ -27,7 +36,7 @@ class HistoryEntryButton extends React.Component {
                         <List.Item>
                             <List.Item.Meta
                                 avatar={<Avatar shape="square" src={this.props.faviconUrl}/>}
-                                title={<a href={item.url} target='_blank'>{item.title}</a>}
+                                title={<a href={item.url} target='_blank' rel='noreferrer'>{item.title}</a>}
                                 description={item.url.length > 50 ? item.url.slice(0, 50) + '...' : item.url}
                             />
                         </List.Item>
@@ -47,6 +56,13 @@ class HistoryPanel extends React.Component {
         super(props);
     }
 
+    static get propTypes() {
+        return {
+            id: PropTypes.string,
+            historyDomains: PropTypes.array
+        };
+    }
+
     render() {
         let counter = 0;
         return (
@@ -63,6 +79,18 @@ class HistoryPanel extends React.Component {
 class WorkspacePanel extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    static get propTypes() {
+        return {
+            id: PropTypes.string,
+            workspaces: PropTypes.array,
+            currentWorkspaceId: PropTypes.string,
+            createNewWorkspace: PropTypes.func,
+            switchToWorkspace: PropTypes.func,
+            deleteWorkspace: PropTypes.func,
+            disableDelete: PropTypes.bool
+        };
     }
 
     render() {
