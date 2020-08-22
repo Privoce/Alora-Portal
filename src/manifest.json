@@ -3,12 +3,6 @@
   "name": "Alora Portal",
   "version": "1.0.0",
   "description": "Yet Another Tab Manager",
-  "content_scripts": [
-    {
-      "matches": ["*://*/*"],
-      "js": ["test.js"]
-    }
-  ],
   "permissions": [
     "tabs",
     "storage",

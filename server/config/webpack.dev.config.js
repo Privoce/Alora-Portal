@@ -1,7 +1,6 @@
 const {HotModuleReplacementPlugin} = require('webpack');
 const {merge} = require('webpack-merge');
 const {resolve} = require('path');
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const baseConfig = require('./webpack.config');
 const {HOST, PORT, HMR_PATH, CONTENT_SCRIPT_CHUNKS, BACKGROUND_CHUNK, PROJECT_ROOT} = require('./env');
 
@@ -16,7 +15,7 @@ for (let entryName in baseConfig.entry) {
     if (CONTENT_SCRIPT_CHUNKS.includes(entryName)) {
         patchedEntry[entryName] = [arrContentScriptClient];
     } else if (BACKGROUND_CHUNK === entryName) {
-        patchedEntry[entryName] = [arrBackgroundClient];
+        patchedEntry[entryName] = [hmrClient, arrBackgroundClient];
     } else {
         patchedEntry[entryName] = [hmrClient, reactHotLoader];
     }
@@ -27,7 +26,6 @@ module.exports = merge(baseConfig, {
     entry: patchedEntry,
     devtool: 'cheap-module-eval-source-map',
     plugins: [
-        new HotModuleReplacementPlugin(),
-        new FriendlyErrorsPlugin()
+        new HotModuleReplacementPlugin()
     ]
 });

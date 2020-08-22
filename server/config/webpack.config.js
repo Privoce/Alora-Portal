@@ -4,32 +4,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const {argv} = require('yargs');
-const {PROJECT_ROOT} = require('./env');
+const {PROJECT_ROOT, MINIMUM_CHROME_VERSION} = require('./env');
 
 const isDev = argv.mode !== 'production';
 
-const babelOptions = {
-    presets: [
-        [
-            '@babel/preset-env',
-            {
-                targets: {
-                    chrome: '80'
-                }
-            }
-        ],
-        '@babel/preset-react'
-    ],
-    plugins: [
-        'react-hot-loader/babel'
-    ]
-};
-
 module.exports = {
     entry: {
-        portal: [resolve(PROJECT_ROOT, 'src/js/portal.js')],
-        stash: [resolve(PROJECT_ROOT, 'src/js/stash.js')],
+        portal: [resolve(PROJECT_ROOT, 'src/js/portal.jsx')],
+        stash: [resolve(PROJECT_ROOT, 'src/js/stash.jsx')],
         background: [resolve(PROJECT_ROOT, 'src/js/background.js')]
     },
     output: {
@@ -41,31 +25,12 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: babelOptions
-                    },
-                    {
-                        loader: 'eslint-loader'
-                    }
-                ],
+                use: ['babel-loader'],
                 exclude: /node_modules/
             },
             {
                 test: /\.tsx?$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: babelOptions
-                    },
-                    {
-                        loader:'ts-loader'
-                    },
-                    {
-                        loader: 'eslint-loader'
-                    }
-                ],
+                use: ['babel-loader', 'ts-loader'],
                 exclude: /node_modules/
             },
             {
@@ -89,9 +54,7 @@ module.exports = {
                             hmr: isDev
                         }
                     },
-                    {
-                        loader: 'css-loader'
-                    }
+                    'css-loader'
                 ]
             },
             {
@@ -109,9 +72,7 @@ module.exports = {
                             importLoaders: 1
                         }
                     },
-                    {
-                        loader: 'sass-loader'
-                    }
+                    'sass-loader'
                 ]
             },
             {
@@ -152,6 +113,7 @@ module.exports = {
         new WebpackBar({
             color: isDev ? '#fff300' : '#00fff7'
         }),
+        new FriendlyErrorsPlugin(),
         new MiniCssExtractPlugin(),
         new CopyWebpackPlugin({
             patterns: [
@@ -165,6 +127,10 @@ module.exports = {
                                 (content['content_security_policy'] || '') +
                                 'script-src \'self\' \'unsafe-eval\';object-src \'self\';';
                         }
+                        content.name = content.name || process.env.npm_package_name;
+                        content.description = content.description || process.env.npm_package_description;
+                        content.version = content.version || process.env.npm_package_version;
+                        content.minimum_chrome_version = MINIMUM_CHROME_VERSION;
                         return Buffer.from(JSON.stringify(content));
                     }
                 }
