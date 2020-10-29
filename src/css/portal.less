@@ -1,23 +1,27 @@
 /* montserrat-regular - latin */
 @font-face {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
-  src: local('Montserrat Regular'), local('Montserrat-Regular'),
-  url('../../public/montserrat-v14-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../../public/montserrat-v14-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Regular"), local("Montserrat-Regular"),
+    url("../../public/montserrat-v14-latin-regular.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("../../public/montserrat-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* montserrat-700 - latin */
 @font-face {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
-  src: local('Montserrat Bold'), local('Montserrat-Bold'),
-  url('../../public/montserrat-v14-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../../public/montserrat-v14-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Bold"), local("Montserrat-Bold"),
+    url("../../public/montserrat-v14-latin-700.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("../../public/montserrat-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 body {
@@ -27,21 +31,22 @@ body {
 }
 
 #historyPanel {
-  width: 56px;
-  height: 100vh;
+  height: 100%;
   overflow-y: scroll;
   padding: 2px;
-  background-color: #f1f1f1;
+  background-color: transparent;
+  margin-left: 5rem;
 
   &::-webkit-scrollbar {
     width: 0;
   }
 
   button.ant-btn {
-    width: 48px;
-    height: 48px;
+    background: transparent;
+    width: 56px;
+    height: 56px;
     padding: 6px;
-    margin: 2px;
+    margin: 4px;
 
     img {
       width: 36px;
@@ -51,11 +56,7 @@ body {
 }
 
 #workspacePanel {
-  position: absolute;
-  left: 56px;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  height: 100vh;
 
   .ant-tabs {
     position: absolute;
@@ -100,4 +101,61 @@ div.ant-popover {
   .ant-list-item-meta-title {
     font-weight: 700;
   }
+}
+
+.home--clock {
+  font-size: 80px;
+  padding: 0;
+  margin: 0;
+  margin-left: 5rem;
+}
+
+.home--username {
+  font-size: 30px;
+  padding: 0;
+  margin: 0;
+  margin-left: 5rem;
+}
+
+.home--weather {
+  svg {
+    color: #dacc0f;
+    font-size: 20px;
+  }
+  margin-top: 10px;
+  margin-left: 5rem;
+  font-size: 15px;
+}
+
+.home--location {
+  svg {
+    color: #000;
+    font-size: 20px;
+  }
+  margin-left: 5rem;
+  font-size: 15px;
+}
+
+.home--history {
+  margin-top: 40px;
+  margin-left: 5rem;
+  font-size: 22px;
+}
+
+.home--calendar {
+  margin-top: 20px;
+  margin-left: 6rem;
+  font-size: 22px;
+}
+
+.site-calendar-demo-card {
+  padding: 0 100px;
+  display: flex;
+  justify-content: center;
+  border-radius: 2px;
+}
+
+.home--workspace {
+  margin-top: 20px;
+  font-size: 22px;
 }
