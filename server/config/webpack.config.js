@@ -6,9 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WebpackBar = require("webpackbar");
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 const { argv } = require("yargs");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { PROJECT_ROOT, MINIMUM_CHROME_VERSION } = require("./env");
-
 const isDev = argv.mode !== "production";
 
 module.exports = {
@@ -123,12 +121,6 @@ module.exports = {
     }),
     new FriendlyErrorsPlugin(),
     new MiniCssExtractPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-      typescript: {
-        memoryLimit: 2048,
-        configFile: resolve(PROJECT_ROOT, "tsconfig.json"),
-      },
-    }),
     new CopyWebpackPlugin({
       patterns: [
         {
