@@ -1,3 +1,6 @@
+import {TabManager} from "./tab-manager";
+import ReactDOM from "react-dom";
+
 let currentWorkspaceId = null;
 let mainWindowId = null;
 let stashWindowId = null;
@@ -50,3 +53,6 @@ chrome.browserAction.onClicked.addListener(() => {
         }
     });
 });
+
+TabManager.initialize().then();
+

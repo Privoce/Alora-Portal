@@ -24,20 +24,29 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        use: ["babel-loader"],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.tsx?$/,
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              transpileOnly: true,
-            },
-          },
-        ],
-        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    chrome: MINIMUM_CHROME_VERSION
+                  }
+                }
+              ],
+              '@babel/preset-react'
+            ],
+            plugins: [
+              'react-hot-loader/babel',
+              ['@babel/plugin-proposal-decorators', {legacy: true}],
+              ['@babel/plugin-proposal-class-properties', {loose: true}],
+              ['babel-plugin-import', {libraryName: 'antd'}]
+            ]
+          }
+        },
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|woff2?)$/,
