@@ -3,16 +3,9 @@
   "name": "Alora Portal",
   "version": "1.0.0",
   "description": "Yet Another Tab Manager",
-  "permissions": [
-    "tabs",
-    "storage",
-    "history",
-    "chrome://favicon/"
-  ],
+  "permissions": ["tabs", "storage", "history", "chrome://favicon/"],
   "background": {
-    "scripts": [
-      "background.js"
-    ],
+    "scripts": ["background.js"],
     "persistent": false
   },
   "browser_action": {

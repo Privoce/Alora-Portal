@@ -1,6 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { FaSun, FaLocationArrow } from "react-icons/fa";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import format from "date-fns/format";
+import parse from "date-fns/parse";
+import startOfWeek from "date-fns/startOfWeek";
+import getDay from "date-fns/getDay";
+import ApiCalendar from "react-google-calendar-api";
 
 import {
   Avatar,
@@ -11,11 +17,11 @@ import {
   Tabs,
   Row,
   Col,
-  Calendar,
   Badge,
 } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 
@@ -662,10 +668,20 @@ class App extends React.Component {
     //   ) : null;
     // };
 
-    const onPanelChange = (value, mode) => {
-      console.log(value, mode);
+    const locales = {
+      "en-US": require("date-fns/locale/en-US"),
     };
+    const localizer = dateFnsLocalizer({
+      format,
+      parse,
+      startOfWeek,
+      getDay,
+      locales,
+    });
 
+    function handleGoogleAuth() {
+      ApiCalendar.handleAuthClick();
+    }
     return (
       <Row>
         <Col span={6}>
@@ -688,15 +704,24 @@ class App extends React.Component {
 
         <Col span={9}>
           <h2 className="home--calendar">Calendar</h2>
-          {/* <div className="home--calendar">
-            <Calendar
-              fullscreen={false}
-              dateCellRender={dateCellRender}
-              monthCellRender={monthCellRender}
-            />
-          </div> */}
+          <button
+            id="authorize_button"
+            style="display: none;"
+            onClick={handleGoogleAuth}
+          >
+            Authorize
+          </button>
+          <button id="signout_button" style="display: none;">
+            Sign Out
+          </button>
           <div className="site-calendar-demo-card">
-            <Calendar fullscreen={false} onPanelChange={onPanelChange} />
+            {/* <Calendar
+              //event+s={myEventsList}
+              localizer={localizer}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 500 }}
+            /> */}
           </div>
           ,
         </Col>

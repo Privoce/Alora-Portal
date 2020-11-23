@@ -51,6 +51,9 @@
     "yargs": "^15.4.1"
   },
   "dependencies": {
+    "date-fns": "^2.16.1",
+    "react-big-calendar": "^0.28.2",
+    "react-google-calendar-api": "^1.2.1",
     "react-icons": "^3.11.0"
   }
 }
