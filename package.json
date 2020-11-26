@@ -47,5 +47,10 @@
     "webpack-merge": "^5.1.1",
     "webpackbar": "^4.0.0",
     "yargs": "^15.4.1"
+  },
+  "dependencies": {
+    "date-fns": "^2.16.1",
+    "react-big-calendar": "^0.28.6",
+    "react-google-calendar-api": "^1.2.1"
   }
 }
