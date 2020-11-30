@@ -8,11 +8,12 @@ import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { v4 as uuidv4 } from "uuid";
 import { TabManager } from "./tab-manager";
-import { Calendar as BigCalendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar as BigCalendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
+import calendarImg from "../assets/calendar.png";
 
 const { TabPane } = Tabs;
 
@@ -599,7 +600,6 @@ class App extends React.Component {
         </Col>
 
         <Col span={9}>
-          <h2 className="home--calendar">Calendar</h2>
           {/* <div className="home--calendar">
             <Calendar
               fullscreen={false}
@@ -609,11 +609,19 @@ class App extends React.Component {
           </div> */}
           <div className="site-calendar-demo-card">
             <BigCalendar
-              style={{ height: "420px" }}
+              className="big-calendar"
+              style={{ height: "320px" }}
               events={[]}
               localizer={localizer}
               startAccessor="start"
               endAccessor="end"
+              defaultView={Views.DAY}
+              views={Views.DAY}
+              components={{
+                toolbar: CustomToolbar,
+                timeGutterHeader: CustomTimeGutterHeader,
+                dateCellWrapper: CustomDateCellWrapper
+              }}
             />
           </div>
           ,
@@ -634,6 +642,65 @@ class App extends React.Component {
       </Row>
     );
   }
+}
+
+const CustomToolbar = () => { 
+  return (
+    <div className="home--calendar-toolbar">
+      <img src={calendarImg} alt=""/>
+      <h2 className="home--calendar">Calendar</h2>
+    </div>
+  )
+}
+
+const CustomTimeGutterHeader = () => {  
+  return (
+    <div>
+      <h2 className="calendar--card-today">Today</h2>
+    </div>
+  )
+}
+
+/*
+const date = new Date();
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${hour}:${minutes}`;
+*/
+
+class CustomDateCellWrapper extends React.Component {
+  getDate() {
+    const date = new Date();
+    const day = date.getUTCDate();
+    let month = date.getDate();
+    switch (month) {
+      case 1: month = "January"; break;
+      case 2: month = "February"; break;
+      case 3: month = "March"; break;
+      case 4: month = "April"; break;
+      case 5: month = "May"; break;
+      case 6: month = "June"; break;
+      case 7: month = "July"; break;
+      case 8: month = "August"; break;
+      case 9: month = "September"; break;
+      case 10: month = "October"; break;
+      case 11: month = "November"; break;
+      default: month = "December";            
+    }
+    const year = date.getFullYear()
+    return `${day} ${month}, ${year}`;
+  }
+
+  render () {
+
+    return(
+      <div className="calendar--card-date">
+        <p>{this.getDate()}</p>
+      </div>
+    );
+  }
+  
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));

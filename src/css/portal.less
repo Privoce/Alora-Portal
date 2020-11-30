@@ -142,10 +142,55 @@ div.ant-popover {
   font-size: 22px;
 }
 
-.home--calendar {
-  margin-top: 20px;
-  margin-left: 6rem;
-  font-size: 22px;
+.home--calendar-toolbar {
+  width: 25rem;
+  display: flex;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home--calendar {
+    margin-left: 10px;
+    font-size: 22px;
+    // font-family: "New-York", sans-serif;
+    line-height: 50px;
+    color: #313131;
+  }
+}
+
+.calendar--card-today {
+  margin-bottom: 0;
+  background-color: #5C46E3;
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: lighter;
+  text-align: center;
+  line-height: 30px;
+  color: #FFFFFF;
+}
+
+.calendar--card-date {
+  width: auto;
+
+  p {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+.rbc-time-view {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border: none !important;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.rbc-overflowing {
+  margin-right: 0 !important;
+  border: none;
 }
 
 .site-calendar-demo-card {
@@ -153,6 +198,19 @@ div.ant-popover {
   display: flex;
   justify-content: center;
   border-radius: 2px;
+}
+
+.rbc-timeslot-group {
+  background-color: #FFFFFF;
+}
+
+.rbc-time-slot {
+  border: none !important;
+}
+
+.rbc-current-time-indicator {
+  height: 2px;
+  background-color: #5C46E3 !important;
 }
 
 .home--workspace {
