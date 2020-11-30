@@ -7,7 +7,6 @@ import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { v4 as uuidv4 } from "uuid";
-import { TabManager } from "./tab-manager";
 import { Calendar as BigCalendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";

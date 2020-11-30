@@ -7,9 +7,9 @@ compiler.run((error, stats) => {
         console.error(error);
     } else {
         console.log(stats.toString({
-            colors:true,
-            modules:false,
-            children:false
+            colors: true,
+            modules: false,
+            children: false
         }));
     }
 });
