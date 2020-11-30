@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FaLocationArrow, FaSun } from "react-icons/fa";
-
-import { Avatar, Button, Calendar, Col, List, Popover, Row, Tabs } from "antd";
+import { FaLocationArrow, FaSun, FaGoogle } from "react-icons/fa";
+import { Avatar, Button, Col, List, Popover, Row, Tabs } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -15,6 +14,8 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 
 const { TabPane } = Tabs;
+
+const BACKEND_URL = "http://localhost:3030/";
 
 class HistoryEntryButton extends React.Component {
   constructor(props) {
@@ -158,6 +159,12 @@ class App extends React.Component {
       historyDomains: [],
       workspaces: [],
       currentWorkspaceId: null,
+      user: {
+        name: "",
+        googleConnect: false,
+        token: "",
+        events: [],
+      },
     };
     this.mainWindowId = null;
     this.stashWindowId = null;
@@ -174,6 +181,9 @@ class App extends React.Component {
     this.switchToWorkspace = this.switchToWorkspace.bind(this);
     this.deleteWorkspace = this.deleteWorkspace.bind(this);
     this.updateWorkspace = this.updateWorkspace.bind(this);
+
+    this.getEventsFromServer = this.getEventsFromServer.bind(this);
+    this.loginHandle = this.loginHandle.bind(this);
   }
 
   setCurrentWorkspaceId(currentWorkspaceId) {
@@ -497,6 +507,123 @@ class App extends React.Component {
     }
   }
 
+  async getEventsFromServer() {
+    const googleConected = localStorage.getItem("googleConnect");
+    const token = localStorage.getItem("token");
+    const nickname = localStorage.getItem("nickname");
+
+    // if dont have google account connected
+    if (!googleConected) {
+      return;
+    }
+
+    const response = await fetch(`${BACKEND_URL}user/calendar`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": token,
+      },
+    });
+
+    if (response.status == 401) {
+      this.setState({
+        user: {
+          name: "",
+          googleConnect: false,
+          token: "",
+          events: [],
+        },
+      });
+
+      return;
+    }
+
+    if (response.status !== 200) {
+      return alert("Error fetch calendar data");
+    }
+
+    const data = await response.json();
+
+    if (data.events && data.events.length > 0) {
+      const events = data.events.map((event) => ({
+        id: event.id,
+        start: new Date(event.start.date) || new Date(event.start.dateTime),
+        end: new Date(event.end.date) || new Date(event.end.dateTime),
+        title: event.summary,
+        allDay: event.start.date ? true : false,
+      }));
+
+      this.setState({
+        user: {
+          name: nickname,
+          token,
+          googleConnect: googleConected,
+          events,
+        },
+      });
+    }
+  }
+
+  loginHandle() {
+    const globalThis = this;
+
+    chrome.tabs.create({
+      url: `${BACKEND_URL}auth/google?redirect=http://localhost/auth?token=`,
+    });
+
+    // we can improve this, listering only the auth tab
+    chrome.tabs.onUpdated.addListener(async function authorizationHook(
+      tabId,
+      changeInfo,
+      tab
+    ) {
+      //If you don't have the authentication tab id remove that part
+      if (tab.title.indexOf("token=") >= 0) {
+        //tab url consists of access_token
+        var url = new URL(tab.url);
+        const urlParams = new URLSearchParams(url.search);
+        const token = urlParams.get("token");
+
+        if (!token) {
+          return;
+        }
+
+        const userResponse = await fetch(`${BACKEND_URL}auth/me`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": token,
+          },
+        });
+
+        if (userResponse.status !== 200) {
+          return alert("User not found");
+        }
+
+        const userData = await userResponse.json();
+
+        globalThis.setState({
+          user: {
+            name: userData.user.nickname,
+            googleConnect: true,
+            token,
+            events: [],
+          },
+        });
+
+        //save on localstorage
+        localStorage.setItem("nickname", userData.user.nickname);
+        localStorage.setItem("googleConnect", "true");
+        localStorage.setItem("token", token);
+
+        globalThis.getEventsFromServer();
+
+        chrome.tabs.onUpdated.removeListener(authorizationHook);
+        chrome.tabs.remove(tabId);
+      }
+    });
+  }
+
   componentDidMount() {
     // load recent history
     chrome.history.search(
@@ -556,6 +683,9 @@ class App extends React.Component {
       }
     });
     this.updateLock = false;
+
+    //fetch data from api
+    this.getEventsFromServer();
   }
 
   getHour() {
@@ -563,7 +693,9 @@ class App extends React.Component {
     const hour = date.getHours();
     const minutes = date.getMinutes();
 
-    return `${hour}:${minutes}`;
+    return `${hour < 10 ? "0" : ""}${hour}:${
+      minutes < 10 ? "0" : ""
+    }${minutes}`;
   }
 
   render() {
@@ -582,7 +714,9 @@ class App extends React.Component {
       <Row>
         <Col span={6}>
           <h1 className="home--clock">{this.getHour()}</h1>
-          <h1 className="home--username">Welcome Su Han</h1>
+          <h1 className="home--username">
+            Welcome {this.state.user.name ? this.state.user.name : "User"}
+          </h1>
           <p className="home--weather">
             <FaSun /> 80 F
           </p>
@@ -600,23 +734,25 @@ class App extends React.Component {
 
         <Col span={9}>
           <h2 className="home--calendar">Calendar</h2>
-          {/* <div className="home--calendar">
-            <Calendar
-              fullscreen={false}
-              dateCellRender={dateCellRender}
-              monthCellRender={monthCellRender}
-            />
-          </div> */}
           <div className="site-calendar-demo-card">
             <BigCalendar
               style={{ height: "420px" }}
-              events={[]}
+              events={this.state.user.events}
               localizer={localizer}
               startAccessor="start"
               endAccessor="end"
+              step={60}
+              showMultiDayTimes
             />
           </div>
-          ,
+          <div className="social-auth--container">
+            {!this.state.user.googleConnect && (
+              <button onClick={this.loginHandle}>
+                <FaGoogle />
+                Login with Google
+              </button>
+            )}
+          </div>
         </Col>
 
         <Col span={9}>

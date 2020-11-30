@@ -1091,11 +1091,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
   integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
 
-"@types/node@^9.6.39":
-  version "9.6.61"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.61.tgz#29f124eddd41c4c74281bd0b455d689109fc2a2d"
-  integrity sha512-/aKAdg5c8n468cYLy2eQrcR5k6chlbNwZNGUj3TboyPa2hcO2QAJcfymlqPzMiRj8B6nYKXjzQz36minFE0RwQ==
-
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
@@ -5850,13 +5845,6 @@ react-dom@^16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
-
-react-google-calendar-api@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-google-calendar-api/-/react-google-calendar-api-1.2.1.tgz#92595004c509fc725f9f7e524c6957fab0c62b8a"
-  integrity sha512-kqIgEPGTdLcUyRFMT2+SIj+iPxqQ5mcilS27XzPmgXBsvbB7PAIOsJYh9yPDOKxHIoCgqNERW/jOnXdG5MS/qA==
-  dependencies:
-    "@types/node" "^9.6.39"
 
 react-hot-loader@^4.12.21:
   version "4.13.0"
