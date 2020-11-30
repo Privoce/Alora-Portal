@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import { Empty } from 'antd';
 
-import 'antd/dist/antd.less';
 import '../css/stash.less';
 
 class App extends React.Component {

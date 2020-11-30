@@ -11,8 +11,8 @@ const isDev = argv.mode !== "production";
 
 module.exports = {
     entry: {
-        portal: [resolve(PROJECT_ROOT, "src/js/portal.jsx")],
-        stash: [resolve(PROJECT_ROOT, "src/js/stash.jsx")],
+        portal: [resolve(PROJECT_ROOT, "src/js/portal.tsx")],
+        stash: [resolve(PROJECT_ROOT, "src/js/stash.tsx")],
         background: [resolve(PROJECT_ROOT, "src/js/background.js")],
     },
     output: {
