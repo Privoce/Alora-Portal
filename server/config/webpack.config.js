@@ -129,7 +129,7 @@ module.exports = {
                         if (isDev) {
                             content["content_security_policy"] =
                                 (content["content_security_policy"] || "") +
-                                "default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval';";
+                                "script-src 'self' 'unsafe-eval';";
                         }
                         content.name = content.name || process.env.npm_package_name;
                         content.description =
