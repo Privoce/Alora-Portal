@@ -11,7 +11,6 @@ import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { v4 as uuidv4 } from "uuid";
-import { TabManager } from "./tab-manager";
 import {
   Calendar as BigCalendar,
   dateFnsLocalizer,
@@ -22,16 +21,13 @@ import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import calendarImg from "../assets/calendar.png";
+import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
 
 const BACKEND_URL = "http://localhost:3030/";
 
 class HistoryEntryButton extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Popover
@@ -45,27 +41,31 @@ class HistoryEntryButton extends React.Component {
           </>
         )}
         content={() => (
-          <List
-            itemLayout="horizontal"
-            dataSource={this.props.historyItems}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<Avatar shape="square" src={this.props.faviconUrl} />}
-                  title={
-                    <a href={item.url} target="_blank" rel="noreferrer">
-                      {item.title}
-                    </a>
-                  }
-                  description={
-                    item.url.length > 50
-                      ? item.url.slice(0, 50) + "..."
-                      : item.url
-                  }
-                />
-              </List.Item>
-            )}
-          />
+          <Scrollbar style={{ minHeight: "200px" }}>
+            <List
+              itemLayout="horizontal"
+              dataSource={this.props.historyItems}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar shape="square" src={this.props.faviconUrl} />
+                    }
+                    title={
+                      <a href={item.url} target="_blank" rel="noreferrer">
+                        {item.title}
+                      </a>
+                    }
+                    description={
+                      item.url.length > 50
+                        ? item.url.slice(0, 50) + "..."
+                        : item.url
+                    }
+                  />
+                </List.Item>
+              )}
+            />
+          </Scrollbar>
         )}
       >
         <Button ghost>
@@ -77,23 +77,21 @@ class HistoryEntryButton extends React.Component {
 }
 
 class HistoryPanel extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let counter = 0;
     return (
-      <div id={this.props.id}>
-        {this.props.historyDomains.map((domain) => (
-          <HistoryEntryButton
-            domain={domain.domain}
-            faviconUrl={domain.faviconUrl}
-            historyItems={domain.historyItems}
-            key={counter++}
-          />
-        ))}
-      </div>
+      <Scrollbar style={{ minHeight: "300px" }}>
+        <div id={this.props.id}>
+          {this.props.historyDomains.map((domain) => (
+            <HistoryEntryButton
+              domain={domain.domain}
+              faviconUrl={domain.faviconUrl}
+              historyItems={domain.historyItems}
+              key={counter++}
+            />
+          ))}
+        </div>
+      </Scrollbar>
     );
   }
 }
@@ -488,33 +486,97 @@ class App extends React.Component {
   }
 
   async updateWorkspace() {
-    if (!this.updateLock) {
-      let r = await new Promise((resolve) => {
-        chrome.tabs.query(
-          {
-            currentWindow: true,
-          },
-          (tabs) => {
-            resolve(
-              tabs
-                .filter((tab) => !tab.pinned) // ignore tab as long as it is pinned
-                .map((tab) => ({
-                  url: tab.url,
-                  title: tab.title,
-                  tabId: tab.id,
-                }))
-            );
-          }
-        );
+    while (this.updateLock) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 50);
       });
-      this.state.workspaces.filter(
-        (item) => item.id === this.state.currentWorkspaceId
-      )[0].entries = r;
-      this.setState({
-        workspaces: this.state.workspaces,
-      });
-      await this.saveWorkspaces();
     }
+    let r = await new Promise((resolve) => {
+      chrome.tabs.query(
+        {
+          currentWindow: true,
+        },
+        (tabs) => {
+          resolve(
+            tabs
+              .filter((tab) => !tab.pinned) // ignore tab as long as it is pinned
+              .map((tab) => ({
+                url: tab.url,
+                title: tab.title,
+                tabId: tab.id,
+              }))
+          );
+        }
+      );
+    });
+    this.state.workspaces.filter(
+      (item) => item.id === this.state.currentWorkspaceId
+    )[0].entries = r;
+    this.setState({
+      workspaces: this.state.workspaces,
+    });
+    await this.saveWorkspaces();
+  }
+
+  componentDidMount() {
+    // load recent history
+    chrome.history.search(
+      {
+        text: "",
+        startTime: Date.now() - 3 * (24 * 60 * 60 * 1000), // start from 1 week ago
+        endTime: Date.now(),
+      },
+      (historyItems) => {
+        let historyDomains = {};
+        for (const historyItem of historyItems) {
+          // remove port number and ?
+          let domain = historyItem.url
+            .split("/")[2]
+            .split(":")[0]
+            .split("?")[0];
+          if (!historyDomains[domain]) {
+            historyDomains[domain] = {
+              domain: domain,
+              faviconUrl: "chrome://favicon/size/128@1x/" + historyItem.url,
+              historyItems: [],
+            };
+          }
+          historyDomains[domain].historyItems.push({
+            title: historyItem.title,
+            url: historyItem.url,
+          });
+        }
+        historyDomains = Object.values(historyDomains);
+        this.setState({ historyDomains });
+      }
+    );
+    // init workspaces
+    this.initWorkspacesAsync().then();
+    // reload current workspace when tabs are created, updated, removed
+    chrome.tabs.onCreated.addListener(this.updateWorkspace);
+    chrome.tabs.onUpdated.addListener(this.updateWorkspace);
+    chrome.tabs.onRemoved.addListener(this.updateWorkspace);
+    // get window id of current window
+    chrome.windows.getCurrent((window) => {
+      this.setMainWindowId(window.id);
+    });
+    // try to fetch stash window id from background script
+    chrome.runtime.sendMessage(
+      {
+        getStashWindowId: true,
+      },
+      (response) => {
+        this.stashWindowId = response;
+      }
+    );
+    // listening for removal of stash windows
+    chrome.windows.onRemoved.addListener((windowId) => {
+      if (windowId === this.stashWindowId) {
+        // stash window removed, reset variable, so that it will be re-created when needed
+        this.setStashWindowId(null);
+      }
+    });
+    this.updateLock = false;
   }
 
   async getEventsFromServer() {

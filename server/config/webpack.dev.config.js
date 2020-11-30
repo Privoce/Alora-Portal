@@ -24,7 +24,7 @@ for (let entryName in baseConfig.entry) {
 module.exports = merge(baseConfig, {
     mode: 'development',
     entry: patchedEntry,
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-cheap-module-source-map',
     plugins: [
         new HotModuleReplacementPlugin()
     ]

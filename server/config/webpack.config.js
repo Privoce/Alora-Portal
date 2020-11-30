@@ -18,35 +18,42 @@ module.exports = {
   output: {
     publicPath: "/",
     path: resolve(PROJECT_ROOT, "build"),
-    filename: "[name].js",
+    filename: "[name].bundle.js",
   },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             presets: [
               [
-                '@babel/preset-env',
+                "@babel/preset-env",
                 {
                   targets: {
-                    chrome: MINIMUM_CHROME_VERSION
-                  }
-                }
+                    chrome: MINIMUM_CHROME_VERSION,
+                  },
+                },
               ],
-              '@babel/preset-react'
+              "@babel/preset-react",
+              "@babel/preset-typescript",
             ],
             plugins: [
-              'react-hot-loader/babel',
-              ['@babel/plugin-proposal-decorators', {legacy: true}],
-              ['@babel/plugin-proposal-class-properties', {loose: true}],
-              ['babel-plugin-import', {libraryName: 'antd'}]
-            ]
-          }
+              "react-hot-loader/babel",
+              "babel-plugin-lodash",
+              ["@babel/plugin-proposal-decorators", { legacy: true }],
+              ["@babel/plugin-proposal-class-properties", { loose: true }],
+              ["babel-plugin-import", { libraryName: "antd" }],
+            ],
+          },
         },
-        exclude: /node_modules/
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.tsx?$/,
+        use: ["awesome-typescript-loader"],
+        exclude: /node_modules/,
       },
       {
         test: /\.(png|jpg|gif|woff2?)$/,
@@ -54,8 +61,9 @@ module.exports = {
           {
             loader: "url-loader",
             options: {
-              name: "[name]_[contenthash].[ext]",
+              name: "[name].[ext]",
               esModule: false,
+              limit: 0,
             },
           },
         ],
@@ -63,24 +71,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isDev,
-            },
-          },
+          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
           "css-loader",
         ],
       },
       {
         test: /\.s[ac]ss$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isDev,
-            },
-          },
+          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
             options: {
@@ -93,12 +91,7 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isDev,
-            },
-          },
+          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
             options: {
@@ -109,10 +102,6 @@ module.exports = {
             loader: "less-loader",
             options: {
               lessOptions: {
-                modifyVars: {
-                  "primary-color": "#75D99D",
-                  "link-color": "#75D99D",
-                },
                 javascriptEnabled: true,
               },
             },
@@ -140,7 +129,7 @@ module.exports = {
             if (isDev) {
               content["content_security_policy"] =
                 (content["content_security_policy"] || "") +
-                "script-src 'self' 'unsafe-eval';object-src 'self';";
+                "script-src 'self' 'unsafe-eval';";
             }
             content.name = content.name || process.env.npm_package_name;
             content.description =
@@ -187,7 +176,6 @@ module.exports = {
   ],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
-    mainFiles: ["index"],
     alias: {
       "react-dom": "@hot-loader/react-dom",
     },

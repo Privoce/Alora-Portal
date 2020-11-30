@@ -9,9 +9,10 @@
     "history",
     "chrome://favicon/"
   ],
+  "content_security_policy": "img-src chrome://favicon;",
   "background": {
     "scripts": [
-      "background.js"
+      "background.bundle.js"
     ],
     "persistent": false
   },
