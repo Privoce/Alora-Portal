@@ -125,9 +125,7 @@ class WorkspacePanel extends React.Component {
               key={workspace.id}
               tab={
                 <>
-                  <span>{workspace.title}</span> -{" "}
-                  {workspace.entries.filter((item) => item.tabId).length} Active
-                  - {workspace.entries.length} Total
+                  {workspace.title}({workspace.entries.length})
                 </>
               }
             >
