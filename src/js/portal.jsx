@@ -25,7 +25,7 @@ import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
 
-const BACKEND_URL = "http://localhost:3030/";
+const BACKEND_URL = "https://auth.privoce.com/";
 
 class HistoryEntryButton extends React.Component {
   render() {
@@ -584,6 +584,15 @@ class App extends React.Component {
     const token = localStorage.getItem("token");
     const nickname = localStorage.getItem("nickname");
 
+    this.setState({
+      user: {
+        name: nickname,
+        googleConnect: googleConected,
+        token,
+        events: [],
+      },
+    });
+
     // if dont have google account connected
     if (!googleConected || token == "") {
       return;
@@ -610,7 +619,8 @@ class App extends React.Component {
       return;
     }
 
-    if (response.status !== 200) {
+    if (response.status > 204) {
+      console.log(response, "error");
       return alert("Error fetch calendar data");
     }
 

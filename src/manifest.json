@@ -7,13 +7,13 @@
     "tabs",
     "storage",
     "history",
-    "chrome://favicon/"
+    "chrome://favicon/",
+    "*://papo.privoce.com/*",
+    "*://auth.privoce.com/*"
   ],
   "content_security_policy": "img-src chrome://favicon;",
   "background": {
-    "scripts": [
-      "background.bundle.js"
-    ],
+    "scripts": ["background.bundle.js"],
     "persistent": false
   },
   "browser_action": {
