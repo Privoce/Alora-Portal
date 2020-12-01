@@ -6,7 +6,7 @@ import {
   FaGoogle,
   FaExternalLinkAlt,
 } from "react-icons/fa";
-import { Avatar, Button, Col, List, Popover, Row, Tabs } from "antd";
+import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -22,6 +22,9 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import calendarImg from "../assets/calendar.png";
 import workspaceImg from "../assets/workspace.png";
+import plusIcon from "../assets/plus-icon.png";
+import gpsIcon from "../assets/gps-icon.png";
+import sunIcon from "../assets/sun-icon.png";
 import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
@@ -83,14 +86,26 @@ class HistoryPanel extends React.Component {
     return (
       <Scrollbar style={{ minHeight: "300px" }}>
         <div id={this.props.id}>
-          {this.props.historyDomains.map((domain) => (
-            <HistoryEntryButton
-              domain={domain.domain}
-              faviconUrl={domain.faviconUrl}
-              historyItems={domain.historyItems}
-              key={counter++}
-            />
-          ))}
+          {this.props.historyDomains.map((domain, index) => {
+            if (index > 9) {
+              return;
+            }
+
+            return (
+              <HistoryEntryButton
+                domain={domain.domain}
+                faviconUrl={domain.faviconUrl}
+                historyItems={domain.historyItems}
+                key={counter++}
+              />
+            );
+          })}
+
+          <Tooltip title="Add a new entry">
+            <Button ghost>
+              <img src={plusIcon} alt="" />
+            </Button>
+          </Tooltip>
         </div>
       </Scrollbar>
     );
@@ -635,11 +650,24 @@ class App extends React.Component {
     if (data.events && data.events.length > 0) {
       const events = data.events.map((event) => ({
         id: event.id,
-        start: new Date(event.start.date) || new Date(event.start.dateTime),
-        end: new Date(event.end.date) || new Date(event.end.dateTime),
+        start: event.start.date
+          ? new Date(event.start.date)
+          : new Date(event.start.dateTime),
+        end: event.end.date
+          ? new Date(event.end.date)
+          : new Date(event.end.dateTime),
         title: event.summary,
         allDay: event.start.date ? true : false,
       }));
+
+      console.log("calendar", {
+        user: {
+          name: nickname,
+          token,
+          googleConnect: googleConected,
+          events,
+        },
+      });
 
       this.setState({
         user: {
@@ -806,13 +834,12 @@ class App extends React.Component {
             Welcome {this.state.user.name ? this.state.user.name : "User"}
           </h1>
           <p className="home--weather">
-            <FaSun /> 80 F
+            <img src={sunIcon} width={20} height={20} /> 80 F
           </p>
           <p className="home--location">
-            <FaLocationArrow /> Boston, US
+            <img src={gpsIcon} width={17} height={17} /> Boston, US
           </p>
           <div>
-            <h2 className="home--history">History</h2>
             <HistoryPanel
               id="historyPanel"
               historyDomains={this.state.historyDomains}
@@ -836,7 +863,7 @@ class App extends React.Component {
                 endAccessor="end"
                 defaultView={Views.DAY}
                 views={Views.DAY}
-                step={60}
+                step={30}
                 showMultiDayTimes
                 components={{
                   toolbar: CustomToolbar,
