@@ -605,7 +605,7 @@ class App extends React.Component {
       },
     });
 
-    if (response.status == 401) {
+    if (response.status === 401) {
       this.setState({
         user: {
           name: "",
@@ -619,7 +619,14 @@ class App extends React.Component {
     }
 
     if (response.status > 204) {
-      console.log(response, "error");
+      this.setState({
+        user: {
+          name: "",
+          googleConnect: false,
+          token: "",
+          events: [],
+        },
+      });
       return alert("Error fetch calendar data");
     }
 
@@ -891,7 +898,8 @@ class CustomDateCellWrapper extends React.Component {
   getDate() {
     const date = new Date();
     const day = date.getUTCDate();
-    let month = date.getDate();
+    let month = date.getDate() - 1;
+
     switch (month) {
       case 1:
         month = "January";
