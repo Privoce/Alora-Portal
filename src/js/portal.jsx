@@ -21,6 +21,7 @@ import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import calendarImg from "../assets/calendar.png";
+import workspaceImg from "../assets/workspace.png";
 import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
@@ -793,7 +794,7 @@ class App extends React.Component {
     });
 
     return (
-      <Row>
+      <Row className="container--portal">
         <Col span={6}>
           <h1 className="home--clock">{this.getHour()}</h1>
           <h1 className="home--username">
@@ -858,7 +859,10 @@ class App extends React.Component {
         </Col>
 
         <Col span={9}>
-          <h2 className="home--workspace">Workspace</h2>
+          <div className="home--workspace-toolbar workspace-header">
+            <img src={workspaceImg} alt="" />
+            <h2 className="home--workspace">Workspace</h2>
+          </div>
           <WorkspacePanel
             id="workspacePanel"
             workspaces={this.state.workspaces}
@@ -885,15 +889,6 @@ const CustomTimeGutterHeader = () => {
     </div>
   );
 };
-
-/*
-const date = new Date();
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
-
-    return `${hour}:${minutes}`;
-*/
-
 class CustomDateCellWrapper extends React.Component {
   getDate() {
     const date = new Date();
