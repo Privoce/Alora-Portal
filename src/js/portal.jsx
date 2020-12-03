@@ -43,29 +43,28 @@ class HistoryEntryButton extends React.Component {
         )}
         content={() => (
           <Scrollbar style={{ minHeight: "200px" }}>
-            <List
-              itemLayout="horizontal"
-              dataSource={this.props.historyItems}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar shape="square" src={this.props.faviconUrl} />
-                    }
-                    title={
-                      <a href={item.url} target="_blank" rel="noreferrer">
-                        {item.title}
-                      </a>
-                    }
-                    description={
-                      item.url.length > 50
-                        ? item.url.slice(0, 50) + "..."
-                        : item.url
-                    }
-                  />
-                </List.Item>
-              )}
-            />
+            <List itemLayout="horizontal">
+              {this.props.historyItems.map(item => (
+                  <List.Item>
+                    <List.Item.Meta
+                        avatar={
+                          <Avatar shape="square" src={this.props.faviconUrl} />
+                        }
+                        title={
+                          <a href={item.url} target="_blank" rel="noreferrer">
+                            {item.title}
+                          </a>
+                        }
+                        description={
+                          item.url.length > 50
+                              ? item.url.slice(0, 50) + "..."
+                              : item.url
+                        }
+
+                    />
+                  </List.Item>
+              ))}
+            </List>
           </Scrollbar>
         )}
       >
@@ -129,28 +128,30 @@ class WorkspacePanel extends React.Component {
                 </>
               }
             >
-              <List
-                itemLayout="horizontal"
-                dataSource={workspace.entries}
-                renderItem={(entry) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          shape="square"
-                          src={"chrome://favicon/size/128@1x/" + entry.url}
-                        />
-                      }
-                      title={entry.title}
-                      description={
-                        entry.url.length > 50
-                          ? entry.url.slice(0, 50) + "..."
-                          : entry.url
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
+              <List itemLayout="horizontal">
+                {workspace.entries.map((entry, index) => (
+                    <List.Item onClick={() => {
+                      chrome.tabs.highlight({
+                        tabs: [index + 1],
+                      });
+                    }}>
+                      <List.Item.Meta
+                          avatar={
+                            <Avatar
+                                shape="square"
+                                src={"chrome://favicon/size/128@1x/" + entry.url}
+                            />
+                          }
+                          title={entry.title}
+                          description={
+                            entry.url.length > 50
+                                ? entry.url.slice(0, 50) + "..."
+                                : entry.url
+                          }
+                      />
+                    </List.Item>
+                ))}
+              </List>
             </TabPane>
           ))}
         </Tabs>
