@@ -128,30 +128,32 @@ class WorkspacePanel extends React.Component {
                 </>
               }
             >
-              <List itemLayout="horizontal">
-                {workspace.entries.map((entry, index) => (
-                    <List.Item onClick={() => {
-                      chrome.tabs.highlight({
-                        tabs: [index + 1],
-                      });
-                    }}>
-                      <List.Item.Meta
-                          avatar={
-                            <Avatar
-                                shape="square"
-                                src={"chrome://favicon/size/128@1x/" + entry.url}
-                            />
-                          }
-                          title={entry.title}
-                          description={
-                            entry.url.length > 50
-                                ? entry.url.slice(0, 50) + "..."
-                                : entry.url
-                          }
-                      />
-                    </List.Item>
-                ))}
-              </List>
+              <Scrollbar noScrollX={true} style={{minHeight: "100%"}}>
+                <List itemLayout="horizontal">
+                  {workspace.entries.map((entry, index) => (
+                      <List.Item onClick={() => {
+                        chrome.tabs.highlight({
+                          tabs: [index + 1],
+                        });
+                      }}>
+                        <List.Item.Meta
+                            avatar={
+                              <Avatar
+                                  shape="square"
+                                  src={"chrome://favicon/size/128@1x/" + entry.url}
+                              />
+                            }
+                            title={entry.title}
+                            description={
+                              entry.url.length > 50
+                                  ? entry.url.slice(0, 50) + "..."
+                                  : entry.url
+                            }
+                        />
+                      </List.Item>
+                  ))}
+                </List>
+              </Scrollbar>
             </TabPane>
           ))}
         </Tabs>
