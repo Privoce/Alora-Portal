@@ -1,11 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  FaLocationArrow,
-  FaSun,
-  FaGoogle,
-  FaExternalLinkAlt,
-} from "react-icons/fa";
+import { FaGoogle, FaExternalLinkAlt } from "react-icons/fa";
 import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
@@ -16,10 +11,7 @@ import {
   dateFnsLocalizer,
   Views,
 } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
+import { getMonth, getDay, startOfWeek, parse, format } from "date-fns";
 import calendarImg from "../assets/calendar.png";
 import workspaceImg from "../assets/workspace.png";
 import plusIcon from "../assets/plus-icon.png";
@@ -620,19 +612,6 @@ class App extends React.Component {
       },
     });
 
-    if (response.status === 401) {
-      this.setState({
-        user: {
-          name: "",
-          googleConnect: false,
-          token: "",
-          events: [],
-        },
-      });
-
-      return;
-    }
-
     if (response.status > 204) {
       this.setState({
         user: {
@@ -642,7 +621,12 @@ class App extends React.Component {
           events: [],
         },
       });
-      return alert("Error fetch calendar data");
+
+      localStorage.setItem("nickname", "");
+      localStorage.setItem("googleConnect", "false");
+      localStorage.setItem("token", "");
+
+      return alert("Session expired!");
     }
 
     const data = await response.json();
@@ -802,6 +786,17 @@ class App extends React.Component {
 
     //fetch data from api
     this.getEventsFromServer();
+
+    const googleConected = localStorage.getItem("googleConnect");
+    const nickname = localStorage.getItem("nickname");
+
+    this.setState({
+      user: {
+        ...this.state.user,
+        name: nickname,
+        googleConnect: googleConected === "true" ? true : false,
+      },
+    });
   }
 
   getHour() {
@@ -921,60 +916,13 @@ const CustomTimeGutterHeader = () => {
     </div>
   );
 };
-class CustomDateCellWrapper extends React.Component {
-  getDate() {
-    const date = new Date();
-    const day = date.getUTCDate();
-    let month = date.getDate() - 1;
 
-    switch (month) {
-      case 1:
-        month = "January";
-        break;
-      case 2:
-        month = "February";
-        break;
-      case 3:
-        month = "March";
-        break;
-      case 4:
-        month = "April";
-        break;
-      case 5:
-        month = "May";
-        break;
-      case 6:
-        month = "June";
-        break;
-      case 7:
-        month = "July";
-        break;
-      case 8:
-        month = "August";
-        break;
-      case 9:
-        month = "September";
-        break;
-      case 10:
-        month = "October";
-        break;
-      case 11:
-        month = "November";
-        break;
-      default:
-        month = "December";
-    }
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-  }
-
-  render() {
-    return (
-      <div className="calendar--card-date">
-        <p>{this.getDate()}</p>
-      </div>
-    );
-  }
-}
+const CustomDateCellWrapper = () => {
+  return (
+    <div className="calendar--card-date">
+      <p>{format(new Date(), "dd MMMM, yyyy")}</p>
+    </div>
+  );
+};
 
 ReactDOM.render(<App />, document.getElementById("root"));
