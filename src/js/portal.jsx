@@ -1,12 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  FaLocationArrow,
-  FaSun,
-  FaGoogle,
-  FaExternalLinkAlt,
-} from "react-icons/fa";
-import { Avatar, Button, Col, List, Popover, Row, Tabs } from "antd";
+import { FaGoogle, FaExternalLinkAlt } from "react-icons/fa";
+import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -16,17 +11,17 @@ import {
   dateFnsLocalizer,
   Views,
 } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
+import { getMonth, getDay, startOfWeek, parse, format } from "date-fns";
 import calendarImg from "../assets/calendar.png";
 import workspaceImg from "../assets/workspace.png";
+import plusIcon from "../assets/plus-icon.png";
+import gpsIcon from "../assets/gps-icon.png";
+import sunIcon from "../assets/sun-icon.png";
 import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
 
-const BACKEND_URL = "http://localhost:3030/";
+const BACKEND_URL = "https://auth.privoce.com/";
 
 class HistoryEntryButton extends React.Component {
   render() {
@@ -82,14 +77,26 @@ class HistoryPanel extends React.Component {
     return (
       <Scrollbar style={{ minHeight: "300px" }}>
         <div id={this.props.id}>
-          {this.props.historyDomains.map((domain) => (
-            <HistoryEntryButton
-              domain={domain.domain}
-              faviconUrl={domain.faviconUrl}
-              historyItems={domain.historyItems}
-              key={counter++}
-            />
-          ))}
+          {this.props.historyDomains.map((domain, index) => {
+            if (index > 9) {
+              return;
+            }
+
+            return (
+              <HistoryEntryButton
+                domain={domain.domain}
+                faviconUrl={domain.faviconUrl}
+                historyItems={domain.historyItems}
+                key={counter++}
+              />
+            );
+          })}
+
+          <Tooltip title="Add a new entry">
+            <Button ghost>
+              <img src={plusIcon} alt="" />
+            </Button>
+          </Tooltip>
         </div>
       </Scrollbar>
     );
@@ -586,6 +593,15 @@ class App extends React.Component {
     const token = localStorage.getItem("token");
     const nickname = localStorage.getItem("nickname");
 
+    this.setState({
+      user: {
+        name: nickname,
+        googleConnect: googleConected,
+        token,
+        events: [],
+      },
+    });
+
     // if dont have google account connected
     if (!googleConected || token == "") {
       return;
@@ -599,7 +615,7 @@ class App extends React.Component {
       },
     });
 
-    if (response.status == 401) {
+    if (response.status > 204) {
       this.setState({
         user: {
           name: "",
@@ -609,11 +625,11 @@ class App extends React.Component {
         },
       });
 
-      return;
-    }
+      localStorage.setItem("nickname", "");
+      localStorage.setItem("googleConnect", "false");
+      localStorage.setItem("token", "");
 
-    if (response.status !== 200) {
-      return alert("Error fetch calendar data");
+      return alert("Session expired!");
     }
 
     const data = await response.json();
@@ -621,11 +637,24 @@ class App extends React.Component {
     if (data.events && data.events.length > 0) {
       const events = data.events.map((event) => ({
         id: event.id,
-        start: new Date(event.start.date) || new Date(event.start.dateTime),
-        end: new Date(event.end.date) || new Date(event.end.dateTime),
+        start: event.start.date
+          ? new Date(event.start.date)
+          : new Date(event.start.dateTime),
+        end: event.end.date
+          ? new Date(event.end.date)
+          : new Date(event.end.dateTime),
         title: event.summary,
         allDay: event.start.date ? true : false,
       }));
+
+      console.log("calendar", {
+        user: {
+          name: nickname,
+          token,
+          googleConnect: googleConected,
+          events,
+        },
+      });
 
       this.setState({
         user: {
@@ -760,6 +789,17 @@ class App extends React.Component {
 
     //fetch data from api
     this.getEventsFromServer();
+
+    const googleConected = localStorage.getItem("googleConnect");
+    const nickname = localStorage.getItem("nickname");
+
+    this.setState({
+      user: {
+        ...this.state.user,
+        name: nickname,
+        googleConnect: googleConected === "true" ? true : false,
+      },
+    });
   }
 
   getHour() {
@@ -792,13 +832,12 @@ class App extends React.Component {
             Welcome {this.state.user.name ? this.state.user.name : "User"}
           </h1>
           <p className="home--weather">
-            <FaSun /> 80 F
+            <img src={sunIcon} width={20} height={20} /> 80 F
           </p>
           <p className="home--location">
-            <FaLocationArrow /> Boston, US
+            <img src={gpsIcon} width={17} height={17} /> Boston, US
           </p>
           <div>
-            <h2 className="home--history">History</h2>
             <HistoryPanel
               id="historyPanel"
               historyDomains={this.state.historyDomains}
@@ -822,7 +861,7 @@ class App extends React.Component {
                 endAccessor="end"
                 defaultView={Views.DAY}
                 views={Views.DAY}
-                step={60}
+                step={30}
                 showMultiDayTimes
                 components={{
                   toolbar: CustomToolbar,
@@ -880,59 +919,13 @@ const CustomTimeGutterHeader = () => {
     </div>
   );
 };
-class CustomDateCellWrapper extends React.Component {
-  getDate() {
-    const date = new Date();
-    const day = date.getUTCDate();
-    let month = date.getDate();
-    switch (month) {
-      case 1:
-        month = "January";
-        break;
-      case 2:
-        month = "February";
-        break;
-      case 3:
-        month = "March";
-        break;
-      case 4:
-        month = "April";
-        break;
-      case 5:
-        month = "May";
-        break;
-      case 6:
-        month = "June";
-        break;
-      case 7:
-        month = "July";
-        break;
-      case 8:
-        month = "August";
-        break;
-      case 9:
-        month = "September";
-        break;
-      case 10:
-        month = "October";
-        break;
-      case 11:
-        month = "November";
-        break;
-      default:
-        month = "December";
-    }
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-  }
 
-  render() {
-    return (
-      <div className="calendar--card-date">
-        <p>{this.getDate()}</p>
-      </div>
-    );
-  }
-}
+const CustomDateCellWrapper = () => {
+  return (
+    <div className="calendar--card-date">
+      <p>{format(new Date(), "dd MMMM, yyyy")}</p>
+    </div>
+  );
+};
 
 ReactDOM.render(<App />, document.getElementById("root"));
