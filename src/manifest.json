@@ -9,7 +9,8 @@
     "history",
     "chrome://favicon/",
     "*://papo.privoce.com/*",
-    "*://auth.privoce.com/*"
+    "*://auth.privoce.com/*",
+    "*://api.openweathermap.org/*"
   ],
   "content_security_policy": "img-src chrome://favicon;",
   "background": {

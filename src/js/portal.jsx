@@ -20,8 +20,9 @@ import sunIcon from "../assets/sun-icon.png";
 import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
-
-const BACKEND_URL = "https://auth.privoce.com/";
+//https://auth.privoce.com/
+const BACKEND_URL = "http://localhost:3030/";
+const OPEN_WEATHER_API_KEY = "5b3152d4c2eb7e1f9f32a2178e8ed7fb";
 
 class HistoryEntryButton extends React.Component {
   render() {
@@ -173,6 +174,11 @@ class App extends React.Component {
       historyDomains: [],
       workspaces: [],
       currentWorkspaceId: null,
+      location: {
+        city: "",
+        region: "",
+        temp: "",
+      },
       user: {
         name: "",
         googleConnect: false,
@@ -785,7 +791,14 @@ class App extends React.Component {
     this.updateLock = false;
 
     //fetch data from api
+    this.getLocationAndWeather();
     this.getEventsFromServer();
+
+    // fetch every minute for events and weather data
+    setInterval(() => {
+      this.getEventsFromServer();
+      this.getLocationAndWeather();
+    }, 60000);
 
     const googleConected = localStorage.getItem("googleConnect");
     const nickname = localStorage.getItem("nickname");
@@ -795,6 +808,36 @@ class App extends React.Component {
         ...this.state.user,
         name: nickname,
         googleConnect: googleConected === "true" ? true : false,
+      },
+    });
+  }
+
+  async getLocationAndWeather() {
+    const locationResponse = await fetch("http://ip-api.com/json/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const locationData = await locationResponse.json();
+
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${locationData.city},${locationData.region},br&appid=${OPEN_WEATHER_API_KEY}`;
+
+    const weatherResponse = await fetch(weatherUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const weatherData = await weatherResponse.json();
+
+    this.setState({
+      location: {
+        city: locationData.city,
+        region: locationData.region,
+        temp: Math.floor(Number(weatherData.main.temp) - 273.15),
       },
     });
   }
@@ -829,10 +872,12 @@ class App extends React.Component {
             Welcome {this.state.user.name ? this.state.user.name : "User"}
           </h1>
           <p className="home--weather">
-            <img src={sunIcon} width={20} height={20} /> 80 F
+            <img src={sunIcon} width={20} height={20} />{" "}
+            {this.state.location.temp}° C
           </p>
           <p className="home--location">
-            <img src={gpsIcon} width={17} height={17} /> Boston, US
+            <img src={gpsIcon} width={17} height={17} />{" "}
+            {this.state.location.city}, {this.state.location.region}
           </p>
           <div>
             <HistoryPanel
