@@ -20,8 +20,8 @@ import sunIcon from "../assets/sun-icon.png";
 import { Scrollbar } from "react-scrollbars-custom";
 
 const { TabPane } = Tabs;
-//https://auth.privoce.com/
-const BACKEND_URL = "http://localhost:3030/";
+
+const BACKEND_URL = "https://auth.privoce.com/";
 const OPEN_WEATHER_API_KEY = "5b3152d4c2eb7e1f9f32a2178e8ed7fb";
 
 class HistoryEntryButton extends React.Component {
@@ -40,25 +40,24 @@ class HistoryEntryButton extends React.Component {
         content={() => (
           <Scrollbar style={{ minHeight: "200px" }}>
             <List itemLayout="horizontal">
-              {this.props.historyItems.map(item => (
-                  <List.Item>
-                    <List.Item.Meta
-                        avatar={
-                          <Avatar shape="square" src={this.props.faviconUrl} />
-                        }
-                        title={
-                          <a href={item.url} target="_blank" rel="noreferrer">
-                            {item.title}
-                          </a>
-                        }
-                        description={
-                          item.url.length > 50
-                              ? item.url.slice(0, 50) + "..."
-                              : item.url
-                        }
-
-                    />
-                  </List.Item>
+              {this.props.historyItems.map((item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar shape="square" src={this.props.faviconUrl} />
+                    }
+                    title={
+                      <a href={item.url} target="_blank" rel="noreferrer">
+                        {item.title}
+                      </a>
+                    }
+                    description={
+                      item.url.length > 50
+                        ? item.url.slice(0, 50) + "..."
+                        : item.url
+                    }
+                  />
+                </List.Item>
               ))}
             </List>
           </Scrollbar>
@@ -136,29 +135,31 @@ class WorkspacePanel extends React.Component {
                 </>
               }
             >
-              <Scrollbar noScrollX={true} style={{minHeight: "100%"}}>
+              <Scrollbar noScrollX={true} style={{ minHeight: "100%" }}>
                 <List itemLayout="horizontal">
                   {workspace.entries.map((entry, index) => (
-                      <List.Item onClick={() => {
+                    <List.Item
+                      onClick={() => {
                         chrome.tabs.highlight({
                           tabs: [index + 1],
                         });
-                      }}>
-                        <List.Item.Meta
-                            avatar={
-                              <Avatar
-                                  shape="square"
-                                  src={"chrome://favicon/size/128@1x/" + entry.url}
-                              />
-                            }
-                            title={entry.title}
-                            description={
-                              entry.url.length > 50
-                                  ? entry.url.slice(0, 50) + "..."
-                                  : entry.url
-                            }
-                        />
-                      </List.Item>
+                      }}
+                    >
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            shape="square"
+                            src={"chrome://favicon/size/128@1x/" + entry.url}
+                          />
+                        }
+                        title={entry.title}
+                        description={
+                          entry.url.length > 50
+                            ? entry.url.slice(0, 50) + "..."
+                            : entry.url
+                        }
+                      />
+                    </List.Item>
                   ))}
                 </List>
               </Scrollbar>
