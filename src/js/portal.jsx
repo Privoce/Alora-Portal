@@ -1,7 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FaGoogle, FaExternalLinkAlt } from "react-icons/fa";
-import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip } from "antd";
+import {
+  FaGoogle,
+  FaExternalLinkAlt,
+  FaArrowLeft,
+  FaArrowRight,
+} from "react-icons/fa";
+import { AiFillPushpin, AiOutlinePushpin } from "react-icons/ai";
+import {
+  Avatar,
+  Button,
+  Col,
+  List,
+  Popover,
+  Row,
+  Tabs,
+  Tooltip,
+  Modal,
+  Input,
+} from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -11,7 +28,15 @@ import {
   dateFnsLocalizer,
   Views,
 } from "react-big-calendar";
-import { getMonth, getDay, startOfWeek, parse, format } from "date-fns";
+import {
+  getMonth,
+  getDay,
+  startOfWeek,
+  parse,
+  format,
+  addDays,
+  subDays,
+} from "date-fns";
 import calendarImg from "../assets/calendar.png";
 import workspaceImg from "../assets/workspace.png";
 import plusIcon from "../assets/plus-icon.png";
@@ -24,7 +49,48 @@ const { TabPane } = Tabs;
 const BACKEND_URL = "https://auth.privoce.com/";
 const OPEN_WEATHER_API_KEY = "5b3152d4c2eb7e1f9f32a2178e8ed7fb";
 
+function PinComponent({ item, callback }) {
+  function handlePin() {
+    callback({ ...item, pined: !item.pined });
+  }
+
+  return (
+    <div
+      className="pin--container"
+      onClick={(e) => {
+        e.stopPropagation();
+        handlePin();
+      }}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {item && item.pined ? <AiFillPushpin /> : <AiOutlinePushpin />}
+    </div>
+  );
+}
+
 class HistoryEntryButton extends React.Component {
+  clickHold = null;
+
+  constructor(props) {
+    super(props);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+  }
+
+  handleMouseDown() {
+    // Can remove only apps/fixed
+    if (!this.props.item.pined) {
+      return;
+    }
+
+    clickHoldTimer = setTimeout(() => {
+      this.props.onDeleteApp(this.props.domain);
+    }, 500);
+  }
+
+  handleMouseUp() {
+    clearTimeout(clickHoldTimer);
+  }
+
   render() {
     return (
       <Popover
@@ -63,7 +129,13 @@ class HistoryEntryButton extends React.Component {
           </Scrollbar>
         )}
       >
-        <Button ghost>
+        <Button
+          ghost
+          onMouseDown={this.handleMouseDown}
+          onMouseUp={this.handleMouseUp}
+          danger={this.props.item.selected}
+        >
+          <PinComponent item={this.props.item} callback={this.props.callback} />
           <img src={this.props.faviconUrl} alt="" />
         </Button>
       </Popover>
@@ -74,26 +146,52 @@ class HistoryEntryButton extends React.Component {
 class HistoryPanel extends React.Component {
   render() {
     let counter = 0;
+
+    let allItems = [];
+
+    this.props.myApps.forEach((app) => {
+      if (app.pined) {
+        allItems.push(app);
+      }
+    });
+
+    const filterHistory = this.props.historyDomains.filter(
+      (domain) => !allItems.find((item) => item.name === domain.domain)
+    );
+
+    const formatedHistory = filterHistory.map((domain) => ({
+      name: domain.domain,
+      pined: false,
+      url: domain.domain,
+      historyItems: domain.historyDomains,
+      icon: domain.faviconUrl,
+    }));
+
+    allItems = [...allItems, ...formatedHistory];
+
     return (
       <Scrollbar style={{ minHeight: "300px" }}>
         <div id={this.props.id}>
-          {this.props.historyDomains.map((domain, index) => {
+          {allItems.map((domain, index) => {
             if (index > 9) {
               return;
             }
 
             return (
               <HistoryEntryButton
-                domain={domain.domain}
-                faviconUrl={domain.faviconUrl}
-                historyItems={domain.historyItems}
+                domain={domain.name}
+                faviconUrl={domain.icon || "https://placedog.net/500"}
+                historyItems={[]}
                 key={counter++}
+                item={domain}
+                callback={this.props.callback}
+                onDeleteApp={this.props.onDeleteApp}
               />
             );
           })}
 
-          <Tooltip title="Add a new entry">
-            <Button ghost>
+          <Tooltip title="Add a new app">
+            <Button ghost onClick={this.props.onNewEntry}>
               <img src={plusIcon} alt="" />
             </Button>
           </Tooltip>
@@ -178,6 +276,7 @@ class App extends React.Component {
       historyDomains: [],
       workspaces: [],
       currentWorkspaceId: null,
+      currentDate: new Date(),
       location: {
         city: "",
         region: "",
@@ -189,6 +288,21 @@ class App extends React.Component {
         token: "",
         events: [],
       },
+      myApps: [
+        {
+          name: "Instagram",
+          url: "https://www.instagram.com",
+          pined: true,
+          icon: "chrome://favicon/size/128@1x/https://www.instagram.com/",
+          selected: false,
+        },
+      ],
+      newEntryModal: false,
+      newEntryModalLoading: false,
+      newEntryModalAppUrl: "",
+      newentryModalImagePreview: "",
+      deleteAppModal: false,
+      deleteAppName: "",
     };
     this.mainWindowId = null;
     this.stashWindowId = null;
@@ -208,6 +322,7 @@ class App extends React.Component {
 
     this.getEventsFromServer = this.getEventsFromServer.bind(this);
     this.loginHandle = this.loginHandle.bind(this);
+    this.handleNewEntryModal = this.handleNewEntryModal.bind(this);
   }
 
   setCurrentWorkspaceId(currentWorkspaceId) {
@@ -654,15 +769,6 @@ class App extends React.Component {
         allDay: event.start.date ? true : false,
       }));
 
-      console.log("calendar", {
-        user: {
-          name: nickname,
-          token,
-          googleConnect: googleConected,
-          events,
-        },
-      });
-
       this.setState({
         user: {
           name: nickname,
@@ -731,6 +837,68 @@ class App extends React.Component {
         chrome.tabs.onUpdated.removeListener(authorizationHook);
         chrome.tabs.remove(tabId);
       }
+    });
+  }
+
+  async getLocationAndWeather() {
+    const locationResponse = await fetch("http://ip-api.com/json/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const locationData = await locationResponse.json();
+
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${locationData.city},${locationData.region},br&appid=${OPEN_WEATHER_API_KEY}`;
+
+    const weatherResponse = await fetch(weatherUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const weatherData = await weatherResponse.json();
+
+    this.setState({
+      location: {
+        city: locationData.city,
+        region: locationData.region,
+        temp: Math.floor(Number(weatherData.main.temp) - 273.15),
+      },
+    });
+  }
+
+  getHour() {
+    const date = new Date();
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${hour < 10 ? "0" : ""}${hour}:${
+      minutes < 10 ? "0" : ""
+    }${minutes}`;
+  }
+
+  handleNewEntryModal() {
+    this.setState({ newEntryModal: !this.state.newEntryModal });
+  }
+
+  saveMyApps() {
+    const saveApps = JSON.stringify(this.state.myApps);
+
+    localStorage.setItem("my-apps", saveApps);
+  }
+
+  loadMyApps() {
+    const savedApps = JSON.parse(localStorage.getItem("my-apps"));
+
+    if (!savedApps) {
+      return;
+    }
+
+    this.setState({
+      myApps: savedApps,
     });
   }
 
@@ -814,46 +982,8 @@ class App extends React.Component {
         googleConnect: googleConected === "true" ? true : false,
       },
     });
-  }
 
-  async getLocationAndWeather() {
-    const locationResponse = await fetch("http://ip-api.com/json/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const locationData = await locationResponse.json();
-
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${locationData.city},${locationData.region},br&appid=${OPEN_WEATHER_API_KEY}`;
-
-    const weatherResponse = await fetch(weatherUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const weatherData = await weatherResponse.json();
-
-    this.setState({
-      location: {
-        city: locationData.city,
-        region: locationData.region,
-        temp: Math.floor(Number(weatherData.main.temp) - 273.15),
-      },
-    });
-  }
-
-  getHour() {
-    const date = new Date();
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
-
-    return `${hour < 10 ? "0" : ""}${hour}:${
-      minutes < 10 ? "0" : ""
-    }${minutes}`;
+    this.loadMyApps();
   }
 
   render() {
@@ -868,26 +998,260 @@ class App extends React.Component {
       locales,
     });
 
+    const handlePinedAppsChange = (item) => {
+      const findApp = this.state.myApps.find((app) => app.name === item.name);
+
+      let updatePineds = [];
+
+      if (findApp) {
+        updatePineds = this.state.myApps.map((app) => {
+          if (app.name === item.name) {
+            return {
+              ...app,
+              pined: item.pined,
+            };
+          }
+
+          return app;
+        });
+      } else {
+        updatePineds = [...this.state.myApps, item];
+      }
+
+      this.setState(
+        {
+          myApps: updatePineds,
+        },
+        () => {
+          this.saveMyApps();
+        }
+      );
+    };
+
+    const handleModalUrlChange = (e) => {
+      this.setState({ newEntryModalAppUrl: e.target.value });
+    };
+
+    const handleDone = async () => {
+      const { newEntryModalAppUrl, myApps } = this.state;
+      this.setState({
+        newEntryModalLoading: true,
+      });
+
+      let prefix = "";
+
+      if (
+        newEntryModalAppUrl.slice(0, 5) !== "https" ||
+        newEntryModalAppUrl.slice(0, 4) !== "http"
+      ) {
+        prefix = "https://";
+      }
+
+      try {
+        new URL(`${prefix}${newEntryModalAppUrl}`);
+
+        let tempTab;
+        chrome.tabs.create(
+          {
+            url: `${prefix}${newEntryModalAppUrl}`,
+            active: false,
+          },
+          (tab) => {
+            tempTab = tab.id;
+          }
+        );
+
+        setTimeout(() => {
+          this.setState(
+            {
+              newentryModalImagePreview: `chrome://favicon/size/128@1x/${prefix}${newEntryModalAppUrl}`,
+              newEntryModalLoading: false,
+              myApps: [
+                ...myApps,
+                {
+                  name: `${prefix}${newEntryModalAppUrl}`,
+                  url: "https://www.instagram.com",
+                  icon: `chrome://favicon/size/128@1x/${prefix}${newEntryModalAppUrl}`,
+                  pined: true,
+                },
+              ],
+            },
+            () => {
+              this.saveMyApps();
+            }
+          );
+
+          chrome.tabs.remove(tempTab);
+
+          //only to create a effect, see icon and close modal
+          setTimeout(() => {
+            this.handleNewEntryModal();
+          }, 500);
+        }, 2000);
+      } catch (err) {
+        this.setState({
+          newEntryModalLoading: false,
+        });
+        return;
+      }
+    };
+
+    const toggleDeleteModal = () => {
+      if (this.state.deleteAppModal) {
+        const updateSelected = this.state.myApps.map((app) => {
+          if (app.selected) {
+            return {
+              ...app,
+              selected: false,
+            };
+          }
+          return app;
+        });
+
+        this.setState({
+          myApps: updateSelected,
+        });
+      }
+
+      this.setState({
+        deleteAppModal: !this.state.deleteAppModal,
+      });
+    };
+
+    const handleDeleteApp = (name) => {
+      const updateSelected = this.state.myApps.map((app) => {
+        if (name === app.name) {
+          return {
+            ...app,
+            selected: true,
+          };
+        }
+        return app;
+      });
+
+      this.setState({
+        deleteAppName: name,
+        myApps: updateSelected,
+      });
+
+      toggleDeleteModal();
+    };
+
+    const deleteApp = () => {
+      const newApps = this.state.myApps.filter(
+        (app) => app.name !== this.state.deleteAppName
+      );
+
+      this.setState(
+        {
+          myApps: newApps,
+        },
+        () => {
+          toggleDeleteModal();
+          this.saveMyApps();
+        }
+      );
+    };
+
+    const {
+      user,
+      newEntryModalAppUrl,
+      newEntryModalLoading,
+      myApps,
+      newEntryModal,
+      location,
+      historyDomains,
+      newentryModalImagePreview,
+      deleteAppModal,
+      deleteAppName,
+    } = this.state;
+
     return (
       <Row className="container--portal">
         <Col span={6}>
           <h1 className="home--clock">{this.getHour()}</h1>
           <h1 className="home--username">
-            Welcome {this.state.user.name ? this.state.user.name : "User"}
+            Welcome{" "}
+            {user.name
+              ? `${user.name.charAt(0).toUpperCase()}${user.name.slice(1)}`
+              : "User"}
           </h1>
           <p className="home--weather">
-            <img src={sunIcon} width={20} height={20} />{" "}
-            {this.state.location.temp}° C
+            <img src={sunIcon} width={20} height={20} /> {location.temp}° C
           </p>
           <p className="home--location">
-            <img src={gpsIcon} width={17} height={17} />{" "}
-            {this.state.location.city}, {this.state.location.region}
+            <img src={gpsIcon} width={17} height={17} /> {location.city},{" "}
+            {location.region}
           </p>
           <div>
             <HistoryPanel
               id="historyPanel"
-              historyDomains={this.state.historyDomains}
+              historyDomains={historyDomains}
+              myApps={myApps}
+              onNewEntry={this.handleNewEntryModal}
+              callback={handlePinedAppsChange}
+              onDeleteApp={handleDeleteApp}
             />
+
+            <Modal
+              title="Add a new app"
+              visible={newEntryModal}
+              onOk={this.handleNewEntryModal}
+              onCancel={this.handleNewEntryModal}
+              footer={
+                <div className="modal-footer--container">
+                  <Button
+                    key="remove"
+                    disabled={newEntryModalLoading}
+                    onClick={this.handleNewEntryModal}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    type="primary"
+                    loading={newEntryModalLoading}
+                    key="done"
+                    onClick={handleDone}
+                  >
+                    Done
+                  </Button>
+                </div>
+              }
+            >
+              <div className="modal-content--container">
+                <div className="modal-contenct--image-container">
+                  <img
+                    src={
+                      !!newentryModalImagePreview && newentryModalImagePreview
+                    }
+                  />
+                  <small>Preview</small>
+                </div>
+                <div className="modal-contenct--input-container">
+                  <label>URL:</label>
+                  <Input
+                    autoFocus
+                    value={newEntryModalAppUrl}
+                    onChange={handleModalUrlChange}
+                    disabled={newEntryModalLoading}
+                  />
+                </div>
+              </div>
+            </Modal>
+
+            {/* Delete app modal */}
+            <Modal
+              title="Delete app"
+              visible={deleteAppModal}
+              onOk={deleteApp}
+              onCancel={toggleDeleteModal}
+              okText="Yes"
+              cancelText="Cancel"
+              okType="danger"
+            >
+              <p>{`Delete the ${deleteAppName} ?`}</p>
+            </Modal>
           </div>
         </Col>
 
@@ -902,6 +1266,7 @@ class App extends React.Component {
                 className="big-calendar"
                 style={{ height: "320px" }}
                 events={this.state.user.events}
+                date={this.state.currentDate}
                 localizer={localizer}
                 startAccessor="start"
                 endAccessor="end"
@@ -910,18 +1275,40 @@ class App extends React.Component {
                 step={30}
                 showMultiDayTimes
                 components={{
-                  toolbar: CustomToolbar,
-                  timeGutterHeader: CustomTimeGutterHeader,
-                  dateCellWrapper: CustomDateCellWrapper,
+                  toolbar: this.CustomToolbar,
+                  timeGutterHeader: this.CustomTimeGutterHeader,
+                  dateCellWrapper: this.CustomDateCellWrapper,
                 }}
               />
-              <a
-                className="google-calendar-link"
-                href="https://calendar.google.com/calendar/u/0/r"
-                target="_blank"
-              >
-                <FaExternalLinkAlt />
-              </a>
+              <div className="calendar-footer--container">
+                <Row>
+                  <Button
+                    onClick={() => {
+                      this.setState({
+                        currentDate: subDays(this.state.currentDate, 1),
+                      });
+                    }}
+                  >
+                    <FaArrowLeft />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      this.setState({
+                        currentDate: addDays(this.state.currentDate, 1),
+                      });
+                    }}
+                  >
+                    <FaArrowRight />
+                  </Button>
+                </Row>
+                <a
+                  className="google-calendar-link"
+                  href="https://calendar.google.com/calendar/u/0/r"
+                  target="_blank"
+                >
+                  <FaExternalLinkAlt />
+                </a>
+              </div>
             </div>
           </div>
           <div className="social-auth--container">
@@ -952,26 +1339,35 @@ class App extends React.Component {
       </Row>
     );
   }
+
+  CustomToolbar = () => {
+    return <div className="home--calendar-toolbar"></div>;
+  };
+
+  CustomTimeGutterHeader = () => {
+    return (
+      <div>
+        <button
+          className="calendar--card-today"
+          onClick={() =>
+            this.setState({
+              currentDate: new Date(),
+            })
+          }
+        >
+          Today
+        </button>
+      </div>
+    );
+  };
+
+  CustomDateCellWrapper = () => {
+    return (
+      <div className="calendar--card-date">
+        <p>{format(this.state.currentDate, "dd MMMM, yyyy")}</p>
+      </div>
+    );
+  };
 }
-
-const CustomToolbar = () => {
-  return <div className="home--calendar-toolbar"></div>;
-};
-
-const CustomTimeGutterHeader = () => {
-  return (
-    <div>
-      <h2 className="calendar--card-today">Today</h2>
-    </div>
-  );
-};
-
-const CustomDateCellWrapper = () => {
-  return (
-    <div className="calendar--card-date">
-      <p>{format(new Date(), "dd MMMM, yyyy")}</p>
-    </div>
-  );
-};
 
 ReactDOM.render(<App />, document.getElementById("root"));

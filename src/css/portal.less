@@ -239,6 +239,7 @@ div.ant-popover {
 }
 
 .calendar--card-today {
+  border: none;
   margin-bottom: 0;
   background-color: #5c46e3;
   border-radius: 8px;
@@ -248,6 +249,12 @@ div.ant-popover {
   text-align: center;
   line-height: 30px;
   color: #ffffff;
+  transition: all 0.4s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #5a4fa7;
+  }
 }
 
 .calendar--card-date {
@@ -301,7 +308,8 @@ div.ant-popover {
   padding: 15px;
 
   .google-calendar-link {
-    margin-right: 10px;
+    margin-top: 5px;
+    margin-right: 15px;
   }
 }
 
@@ -355,4 +363,66 @@ div.ant-popover {
 
 .rbc-event {
   background-color: #5c46e3 !important;
+}
+
+.calendar-footer--container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pin--container {
+  color: #000;
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: rgba(148, 148, 148, 0.205);
+  opacity: 0.5;
+  padding: 1px 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  border-top-right-radius: 15px;
+
+  &:hover {
+    opacity: 1;
+    background: #ff8686;
+    color: #fff;
+  }
+}
+
+.modal-footer--container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.modal-contenct--image-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  img {
+    border-radius: 20px;
+    background-color: #ccc;
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.modal-contenct--input-container {
+  display: flex;
+  width: 100%;
+  padding: 0px 30px;
+  align-items: center;
+  margin-top: 30px;
+
+  label {
+    margin-right: 10px;
+  }
+}
+
+.ant-list-item:hover {
+  cursor: pointer;
 }
