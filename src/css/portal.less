@@ -27,6 +27,10 @@
 }
 
 // Customize scrollbar
+.ScrollbarsCustom {
+  height: 50vh !important;
+}
+
 .ScrollbarsCustom-Wrapper {
   right: 3px !important;
 
@@ -62,16 +66,28 @@ body {
 
   button.ant-btn {
     background: transparent;
-    width: 56px;
-    height: 56px;
+    width: 70px;
+    height: 70px;
     padding: 6px;
-    margin: 4px;
+    margin: 5px;
     border-radius: 15px;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
 
     img {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+
+@media screen and (max-width:1400px) {
+  #historyPanel {
+    margin-top: 20px;
+
+    button.ant-btn {
+      width: 60px;
+      height: 60px;
     }
   }
 }
@@ -83,7 +99,7 @@ body {
     position: absolute;
     top: 72px;
     bottom: 0;
-    width: 100%;
+    width: 90%;
 
     .ant-list-item-meta-title {
       font-weight: 700;
@@ -220,6 +236,11 @@ div.ant-popover {
   margin-bottom: 3px;
 }
 
+.calendar--column {
+  padding-left: 50px !important;
+  width: 100%;
+}
+
 .home--calendar-toolbar {
   width: 25rem;
   display: flex;
@@ -240,6 +261,7 @@ div.ant-popover {
 
 .calendar--card-today {
   border: none;
+  margin-top: 10px !important;
   margin-bottom: 0;
   background-color: #5c46e3;
   border-radius: 8px;
@@ -258,30 +280,46 @@ div.ant-popover {
 }
 
 .calendar--card-date {
-  width: auto;
+  margin-left: 10px;
+  height: 50px;
+  width: 100%;
 
   p {
     margin-top: auto;
     margin-bottom: auto;
+    line-height: 50px;
+    width: 100%;
+    text-align: right;
   }
 }
 
 .rbc-time-view {
   border: none !important;
   border-radius: 15px;
-  padding: 15px;
+  padding: 20px 5px 0 5px;
 }
 
 .rbc-overflowing {
   margin-right: 0 !important;
-  border: none;
+  border: none !important;
+}
+
+.rbc-time-content {
+  border: none !important;
+  overflow-x: hidden !important;
+}
+
+.rbc-time-header-content {
+  border: none !important;
 }
 
 .site-calendar-demo-card {
-  padding: 0 100px;
-  display: flex;
+  width: calc(100% - 100px);
+  min-width: 320px;
+
   justify-content: center;
   border-radius: 2px;
+  height: 30%;
 }
 
 .rbc-timeslot-group {
@@ -306,6 +344,7 @@ div.ant-popover {
   border: none !important;
   border-radius: 15px;
   padding: 15px;
+  height: 100%;
 
   .google-calendar-link {
     margin-top: 5px;
@@ -314,7 +353,6 @@ div.ant-popover {
 }
 
 .calendar-header {
-  padding: 0 100px;
   margin-top: 20px;
   margin-bottom: 3px;
 }
@@ -325,9 +363,11 @@ div.ant-popover {
 }
 
 .social-auth--container {
-  margin: 10px 20px;
+  margin: 10px 0;
   display: flex;
   justify-content: center;
+  width: calc(100% - 100px);
+  min-width: 320px;
 
   button {
     background-color: #567df3;
@@ -352,11 +392,6 @@ div.ant-popover {
   }
 }
 
-.calendar--card-date {
-  margin-left: 10px;
-  margin-top: 7px;
-}
-
 .ant-tabs-nav-wrap {
   margin-top: 10px;
 }
@@ -371,6 +406,7 @@ div.ant-popover {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  padding: 5px 0 0 5px;
 }
 
 .pin--container {
@@ -425,4 +461,15 @@ div.ant-popover {
 
 .ant-list-item:hover {
   cursor: pointer;
+}
+
+.big-calendar {
+  height: 100% !important;
+  max-height: 200px;
+  width: 100%;
+  display: unset;
+}
+
+.rbc-time-header {
+  height: 50px;
 }
