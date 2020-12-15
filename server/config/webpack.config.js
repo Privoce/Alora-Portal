@@ -154,7 +154,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: resolve(PROJECT_ROOT, "src/html/template.ejs"),
       templateParameters: {
-        title: "Alora Portal",
+        title: "Portal - My Personal Front Page",
       },
       filename: "portal.html",
       chunks: ["portal"],
@@ -165,7 +165,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: resolve(PROJECT_ROOT, "src/html/template.ejs"),
       templateParameters: {
-        title: "Alora Portal Stash",
+        title: "Portal - My Personal Front Page Stash",
       },
       filename: "stash.html",
       chunks: ["stash"],

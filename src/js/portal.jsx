@@ -43,6 +43,7 @@ import plusIcon from "../assets/plus-icon.png";
 import gpsIcon from "../assets/gps-icon.png";
 import sunIcon from "../assets/sun-icon.png";
 import { Scrollbar } from "react-scrollbars-custom";
+import socketIOClient from "socket.io-client";
 
 const { TabPane } = Tabs;
 
@@ -308,6 +309,8 @@ class App extends React.Component {
     this.stashWindowId = null;
 
     this.updateLock = true;
+
+    this.socket = null;
 
     this.setCurrentWorkspaceId = this.setCurrentWorkspaceId.bind(this);
     this.setMainWindowId = this.setMainWindowId.bind(this);
@@ -769,6 +772,11 @@ class App extends React.Component {
         allDay: event.start.date ? true : false,
       }));
 
+      // If is the same, dont update the state
+      if (JSON.stringify(this.state.user.events) === JSON.stringify(events)) {
+        return;
+      }
+
       this.setState({
         user: {
           name: nickname,
@@ -784,7 +792,7 @@ class App extends React.Component {
     const globalThis = this;
 
     chrome.tabs.create({
-      url: `${BACKEND_URL}auth/google?redirect=http://localhost/auth?token=`,
+      url: `${BACKEND_URL}auth/google?redirect=https://privoce.com/thankyou.html?token=`,
     });
 
     // we can improve this, listering only the auth tab
@@ -801,6 +809,7 @@ class App extends React.Component {
         const token = urlParams.get("token");
 
         if (!token) {
+          alert("achei nada");
           return;
         }
 
@@ -831,11 +840,16 @@ class App extends React.Component {
         localStorage.setItem("nickname", userData.user.nickname);
         localStorage.setItem("googleConnect", "true");
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", userData.user._id);
+
+        globalThis.socket.emit("storeClientInfo", userData.user);
 
         globalThis.getEventsFromServer();
 
-        chrome.tabs.onUpdated.removeListener(authorizationHook);
-        chrome.tabs.remove(tabId);
+        setTimeout(() => {
+          chrome.tabs.remove(tabId);
+          chrome.tabs.onUpdated.removeListener(authorizationHook);
+        }, 1500);
       }
     });
   }
@@ -903,6 +917,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.socket = socketIOClient(BACKEND_URL);
+
     // load recent history
     chrome.history.search(
       {
@@ -966,14 +982,19 @@ class App extends React.Component {
     this.getLocationAndWeather();
     this.getEventsFromServer();
 
-    // fetch every minute for events and weather data
+    // fetch every minute fo  r events and weather data
     setInterval(() => {
-      this.getEventsFromServer();
+      //this.getEventsFromServer();
       this.getLocationAndWeather();
     }, 60000);
 
     const googleConected = localStorage.getItem("googleConnect");
     const nickname = localStorage.getItem("nickname");
+    const userId = localStorage.getItem("userId");
+
+    if (googleConected === "true") {
+      this.socket.emit("storeClientInfo", { nickname, _id: userId });
+    }
 
     this.setState({
       user: {
@@ -984,6 +1005,10 @@ class App extends React.Component {
     });
 
     this.loadMyApps();
+
+    this.socket.on("new-event", (data) => {
+      this.getEventsFromServer();
+    });
   }
 
   render() {

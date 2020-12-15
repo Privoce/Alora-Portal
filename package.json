@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "date-fns": "^2.16.1",
-    "react-big-calendar": "^0.28.6"
+    "react-big-calendar": "^0.28.6",
+    "socket.io-client": "^3.0.4"
   }
 }
