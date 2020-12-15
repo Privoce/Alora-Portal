@@ -1280,7 +1280,7 @@ class App extends React.Component {
           </div>
         </Col>
 
-        <Col span={9}>
+        <Col className="calendar--column" span={8}>
           <div className="home--calendar-toolbar calendar-header">
             <img src={calendarImg} alt="" />
             <h2 className="home--calendar">Calendar</h2>
@@ -1346,7 +1346,7 @@ class App extends React.Component {
           </div>
         </Col>
 
-        <Col span={9}>
+        <Col span={10}>
           <div className="home--workspace-toolbar workspace-header">
             <img src={workspaceImg} alt="" />
             <h2 className="home--workspace">Workspace</h2>
