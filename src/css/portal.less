@@ -80,8 +80,7 @@ body {
   }
 }
 
-
-@media screen and (max-width:1400px) {
+@media screen and (max-width: 1400px) {
   #historyPanel {
     margin-top: 20px;
 
@@ -99,7 +98,7 @@ body {
     position: absolute;
     top: 72px;
     bottom: 0;
-    width: 90%;
+    width: 100%;
 
     .ant-list-item-meta-title {
       font-weight: 700;
@@ -257,6 +256,18 @@ div.ant-popover {
     line-height: 50px;
     color: #313131;
   }
+}
+
+.notes {
+  width: 100%;
+  height: 26rem;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border: none !important;
+  border-radius: 15px;
+  padding: 15px;
 }
 
 .calendar--card-today {
@@ -472,4 +483,8 @@ div.ant-popover {
 
 .rbc-time-header {
   height: 50px;
+}
+
+.gadgets {
+  padding-left: 50px;
 }

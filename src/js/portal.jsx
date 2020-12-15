@@ -18,6 +18,7 @@ import {
   Tooltip,
   Modal,
   Input,
+  Card,
 } from "antd";
 import "antd/dist/antd.less";
 import "../css/portal.less";
@@ -42,8 +43,10 @@ import workspaceImg from "../assets/workspace.png";
 import plusIcon from "../assets/plus-icon.png";
 import gpsIcon from "../assets/gps-icon.png";
 import sunIcon from "../assets/sun-icon.png";
+import noteIcon from "../assets/notes.png";
 import { Scrollbar } from "react-scrollbars-custom";
 import socketIOClient from "socket.io-client";
+import { Notes } from "./componments/note";
 
 const { TabPane } = Tabs;
 
@@ -1280,7 +1283,10 @@ class App extends React.Component {
           </div>
         </Col>
 
-        <Col className="calendar--column" span={8}>
+        <Col span={8} className="gadgets">
+          {
+            // We should replace them with antd's Card Componment
+          }
           <div className="home--calendar-toolbar calendar-header">
             <img src={calendarImg} alt="" />
             <h2 className="home--calendar">Calendar</h2>
@@ -1343,6 +1349,18 @@ class App extends React.Component {
                 Login with Google
               </button>
             )}
+          </div>
+
+          <div className="note-container">
+            <div className="home--calendar-toolbar calendar-header">
+              <img src={noteIcon} alt="" />
+              <h2 className="home--calendar">Notes</h2>
+            </div>
+            <div className="site-calendar-demo-card">
+              <div className="notes">
+                <Notes></Notes>
+              </div>
+            </div>
           </div>
         </Col>
 
