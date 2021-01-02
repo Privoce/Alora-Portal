@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
+import {Helmet} from "react-helmet";
+import ReactDOM from 'react-dom';
 import { Empty } from 'antd';
 
 import '../css/stash.less';
@@ -29,10 +30,15 @@ class App extends React.Component {
 
     render() {
         return (
-            <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={<span>This window contains all the hidden tabs. Please do not close it. </span>}
-            />
+            <>
+                <Helmet>
+                    <title>Stash Window</title>
+                </Helmet>
+                <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={<span>This window contains all the hidden tabs. Please do not close it. </span>}
+                />
+            </>
         )
     }
 }

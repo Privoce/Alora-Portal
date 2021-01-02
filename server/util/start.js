@@ -5,7 +5,7 @@ const cors = require('cors');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const {default: SseStream} = require('ssestream');
-const devConfig = require('../config/webpack.dev.config');
+const devConfig = require('../config/webpack.config.dev');
 const {HOST, PORT, HMR_PATH, ARR_PATH, CONTENT_SCRIPT_CHUNKS} = require('../config/env');
 
 (async () => {

@@ -9,7 +9,7 @@ import "../../css/calendar.less";
 const BACKEND_URL = "https://auth.privoce.com/";
 
 const CustomToolbar = () => {
-    return <div className="home--calendar-toolbar"/>;
+    return <></>;
 };
 
 const CustomTimeGutterHeader = () => {
@@ -214,36 +214,45 @@ class Calendar extends React.Component {
         return (
             <>
                 {/* We should replace them with antd's Card Component */}
-                <BigCalendar
-                    className="big-calendar"
-                    style={{height: "calc(100% - 30px)"}}
-                    events={this.state.user.events}
-                    localizer={localizer}
-                    startAccessor="start"
-                    endAccessor="end"
-                    defaultView={Views.DAY}
-                    views={Views.DAY}
-                    step={30}
-                    showMultiDayTimes
-                    components={{
-                        toolbar: CustomToolbar,
-                        timeGutterHeader: CustomTimeGutterHeader,
-                        dateCellWrapper: CustomDateCellWrapper,
-                    }}
-                />
-                <a
-                    className="google-calendar-link"
-                    href="https://calendar.google.com/calendar/u/0/r"
-                    target="_blank"
-                >
-                    <FaExternalLinkAlt/>
-                </a>
-                <div className="social-auth--container">
-                    {!this.state.user.googleConnect && (
-                        <button onClick={this.loginHandle}>
-                            <FaGoogle/>
-                            Login with Google
-                        </button>
+                <div className="calendar--container">
+                    {this.state.user.googleConnect ? (
+                        <>
+                            <BigCalendar
+                                className="big-calendar"
+                                style={{height: "calc(100% - 30px)"}}
+                                events={this.state.user.events}
+                                localizer={localizer}
+                                startAccessor="start"
+                                endAccessor="end"
+                                defaultView={Views.DAY}
+                                views={Views.DAY}
+                                step={30}
+                                showMultiDayTimes
+                                components={{
+                                    toolbar: CustomToolbar,
+                                    timeGutterHeader: CustomTimeGutterHeader,
+                                    dateCellWrapper: CustomDateCellWrapper,
+                                }}
+                            />
+                            <div className="link--container">
+                                <a
+                                    className="google-calendar-link"
+                                    href="https://calendar.google.com/calendar/u/0/r"
+                                    target="_blank"
+                                >
+                                    <FaExternalLinkAlt/>
+                                </a>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="social-auth--container">
+                                <button onClick={this.loginHandle}>
+                                    <FaGoogle/>
+                                    Login with Google
+                                </button>
+                            </div>
+                        </>
                     )}
                 </div>
             </>

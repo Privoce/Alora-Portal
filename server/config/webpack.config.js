@@ -107,9 +107,6 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: resolve(PROJECT_ROOT, "src/html/template.ejs"),
-            templateParameters: {
-                title: "Alora Portal",
-            },
             filename: "portal.html",
             chunks: ["portal"],
             minify: {
@@ -118,9 +115,6 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: resolve(PROJECT_ROOT, "src/html/template.ejs"),
-            templateParameters: {
-                title: "Alora Portal Stash",
-            },
             filename: "stash.html",
             chunks: ["stash"],
             minify: {

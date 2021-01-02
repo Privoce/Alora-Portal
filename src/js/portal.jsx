@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { FaGoogle, FaExternalLinkAlt } from "react-icons/fa";
 import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip, Card } from "antd";
 import "antd/dist/antd.less";
-// import "../css/portal.less";
+import "../css/portal.less";
 import { v4 as uuidv4 } from "uuid";
 import {
   Calendar as BigCalendar,
@@ -840,7 +840,7 @@ class App extends React.Component {
             </div>
             <div className="site-calendar-demo-card">
               <div className="notes">
-                <Notes></Notes>
+                <Notes/>
               </div>
             </div>
           </div>
@@ -887,4 +887,10 @@ const CustomDateCellWrapper = () => {
   );
 };
 
-ReactDOM.render(<Calendar />, document.getElementById("root"));
+// ReactDOM.render(<App />, document.getElementById("root"));
+
+// Test
+ReactDOM.render(<div style={{height: "100vh", marginTop: "-1px", paddingTop: "1px"}}>
+  {/*<Notes/>*/}
+  <Calendar/>
+</div>, document.getElementById("root"));
