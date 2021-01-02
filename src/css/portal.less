@@ -123,6 +123,10 @@ body {
   .ant-tabs-content {
     height: calc(100% - 150px);
   }
+
+  .ant-list-item-meta {
+    cursor: pointer;
+  }
 }
 
 div.ant-popover {
@@ -220,23 +224,6 @@ div.ant-popover {
   margin-bottom: 3px;
 }
 
-.home--calendar-toolbar {
-  width: 25rem;
-  display: flex;
-
-  img {
-    width: 50px;
-    height: 50px;
-  }
-
-  .home--calendar {
-    margin-left: 10px;
-    font-size: 22px;
-    // font-family: "New-York", sans-serif;
-    line-height: 50px;
-    color: #313131;
-  }
-}
 
 .notes {
   width: 26rem;
@@ -250,17 +237,6 @@ div.ant-popover {
   padding: 15px;
 }
 
-.calendar--card-today {
-  margin-bottom: 0;
-  background-color: #5c46e3;
-  border-radius: 8px;
-
-  font-size: 12px;
-  font-weight: lighter;
-  text-align: center;
-  line-height: 30px;
-  color: #ffffff;
-}
 
 .calendar--card-date {
   width: auto;
@@ -282,12 +258,6 @@ div.ant-popover {
   border: none;
 }
 
-.site-calendar-demo-card {
-  padding: 0 100px;
-  display: flex;
-  justify-content: center;
-  border-radius: 2px;
-}
 
 .rbc-timeslot-group {
   background-color: #ffffff;
@@ -302,20 +272,6 @@ div.ant-popover {
   background-color: #5c46e3 !important;
 }
 
-.calendar--container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  border: none !important;
-  border-radius: 15px;
-  padding: 15px;
-
-  .google-calendar-link {
-    margin-right: 10px;
-  }
-}
 
 .calendar-header {
   padding: 0 100px;
@@ -326,6 +282,51 @@ div.ant-popover {
 .home--workspace {
   margin-top: 20px;
   font-size: 22px;
+}
+
+
+
+.ant-tabs-nav-wrap {
+  margin-top: 10px;
+}
+
+.home--calendar-toolbar {
+  width: 25rem;
+  display: flex;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home--calendar {
+    margin-left: 10px;
+    font-size: 22px;
+    // font-family: "New-York", sans-serif;
+    line-height: 50px;
+    color: #313131;
+  }
+}
+
+.calendar--card-today {
+  margin-bottom: 0;
+  background-color: #5c46e3;
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: lighter;
+  text-align: center;
+  line-height: 30px;
+  color: #ffffff;
+}
+
+.calendar--card-date {
+  margin-left: 10px;
+  margin-top: 7px;
+}
+
+.google-calendar-link {
+  margin-right: 10px;
 }
 
 .social-auth--container {
@@ -354,15 +355,6 @@ div.ant-popover {
     color: #5c46e3 !important;
     margin-right: 10px;
   }
-}
-
-.calendar--card-date {
-  margin-left: 10px;
-  margin-top: 7px;
-}
-
-.ant-tabs-nav-wrap {
-  margin-top: 10px;
 }
 
 .rbc-event {

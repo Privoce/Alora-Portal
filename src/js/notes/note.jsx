@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 import RichEditor from 'rich-markdown-editor';
-import { hijackSave } from "../misc/utils";
-import { fetchLastEditorId, save, restore, update } from "../storage/storage";
-import { NotesManager } from "../storage/noteManager";
-import addIcon from "../../assets/add.png";
-import { resetLastEditorId, setLastEditorId } from "../storage/storage";
 import { v1 } from 'uuid';
 import { Modal, Input, Button } from 'antd';
 import debounce from 'lodash.debounce';
+import { save, restore, update, resetLastEditorId, setLastEditorId } from "../misc/storage";
+import { NotesManager } from "./noteManager";
 import "../../css/note.less";
+import addIcon from "../../assets/add.png";
 
 class PreviewBlock extends React.Component {
 

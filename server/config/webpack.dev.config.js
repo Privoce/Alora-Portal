@@ -2,7 +2,7 @@ const {HotModuleReplacementPlugin} = require('webpack');
 const {merge} = require('webpack-merge');
 const {resolve} = require('path');
 const baseConfig = require('./webpack.config');
-const {HOST, PORT, HMR_PATH, CONTENT_SCRIPT_CHUNKS, BACKGROUND_CHUNK, PROJECT_ROOT} = require('./env');
+const {HOST, PORT, HMR_PATH, CONTENT_SCRIPT_CHUNKS, BACKGROUND_CHUNK} = require('./env');
 
 const hmrUrl = encodeURIComponent(`http://${HOST}:${PORT}${HMR_PATH}`);
 const hmrClient = `webpack-hot-middleware/client?path=${hmrUrl}&reload=true&overlay=true`;

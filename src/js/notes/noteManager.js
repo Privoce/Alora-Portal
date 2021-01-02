@@ -1,4 +1,4 @@
-import {restore, save, remove} from './storage';
+import {restore, save, remove} from '../misc/storage';
 
 class NotesManager {
     notes;

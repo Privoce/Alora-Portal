@@ -3,8 +3,7 @@ import ReactDOM from "react-dom";
 import { FaGoogle, FaExternalLinkAlt } from "react-icons/fa";
 import { Avatar, Button, Col, List, Popover, Row, Tabs, Tooltip, Card } from "antd";
 import "antd/dist/antd.less";
-import "../css/portal.less";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+// import "../css/portal.less";
 import { v4 as uuidv4 } from "uuid";
 import {
   Calendar as BigCalendar,
@@ -19,7 +18,9 @@ import gpsIcon from "../assets/gps-icon.png";
 import sunIcon from "../assets/sun-icon.png";
 import noteIcon from "../assets/notes.png";
 import { Scrollbar } from "react-scrollbars-custom";
-import {Notes} from "./componments/note";
+import {Notes} from "./notes/note";
+import {QuickAccess} from "./quickAccess/quickAccess";
+import {Calendar} from "./calendar/calendar";
 
 const { TabPane } = Tabs;
 
@@ -529,67 +530,6 @@ class App extends React.Component {
     await this.saveWorkspaces();
   }
 
-  componentDidMount() {
-    // load recent history
-    chrome.history.search(
-      {
-        text: "",
-        startTime: Date.now() - 3 * (24 * 60 * 60 * 1000), // start from 1 week ago
-        endTime: Date.now(),
-      },
-      (historyItems) => {
-        let historyDomains = {};
-        for (const historyItem of historyItems) {
-          // remove port number and ?
-          let domain = historyItem.url
-            .split("/")[2]
-            .split(":")[0]
-            .split("?")[0];
-          if (!historyDomains[domain]) {
-            historyDomains[domain] = {
-              domain: domain,
-              faviconUrl: "chrome://favicon/size/128@1x/" + historyItem.url,
-              historyItems: [],
-            };
-          }
-          historyDomains[domain].historyItems.push({
-            title: historyItem.title,
-            url: historyItem.url,
-          });
-        }
-        historyDomains = Object.values(historyDomains);
-        this.setState({ historyDomains });
-      }
-    );
-    // init workspaces
-    this.initWorkspacesAsync().then();
-    // reload current workspace when tabs are created, updated, removed
-    chrome.tabs.onCreated.addListener(this.updateWorkspace);
-    chrome.tabs.onUpdated.addListener(this.updateWorkspace);
-    chrome.tabs.onRemoved.addListener(this.updateWorkspace);
-    // get window id of current window
-    chrome.windows.getCurrent((window) => {
-      this.setMainWindowId(window.id);
-    });
-    // try to fetch stash window id from background script
-    chrome.runtime.sendMessage(
-      {
-        getStashWindowId: true,
-      },
-      (response) => {
-        this.stashWindowId = response;
-      }
-    );
-    // listening for removal of stash windows
-    chrome.windows.onRemoved.addListener((windowId) => {
-      if (windowId === this.stashWindowId) {
-        // stash window removed, reset variable, so that it will be re-created when needed
-        this.setStashWindowId(null);
-      }
-    });
-    this.updateLock = false;
-  }
-
   async getEventsFromServer() {
     const googleConected = localStorage.getItem("googleConnect");
     const token = localStorage.getItem("token");
@@ -732,35 +672,36 @@ class App extends React.Component {
   componentDidMount() {
     // load recent history
     chrome.history.search(
-      {
-        text: "",
-        startTime: Date.now() - 7 * (24 * 60 * 60 * 1000), // start from 1 week ago
-        endTime: Date.now(),
-      },
-      (historyItems) => {
-        let historyDomains = {};
-        for (const historyItem of historyItems) {
-          // remove port number and ?
-          let domain = historyItem.url
-            .split("/")[2]
-            .split(":")[0]
-            .split("?")[0];
-          if (!historyDomains[domain]) {
-            historyDomains[domain] = {
-              domain: domain,
-              faviconUrl: "chrome://favicon/size/128@1x/" + historyItem.url,
-              historyItems: [],
-            };
+        {
+          text: "",
+          startTime: Date.now() - 7 * (24 * 60 * 60 * 1000), // start from 1 week ago
+          endTime: Date.now(),
+        },
+        (historyItems) => {
+          let historyDomains = {};
+          for (const historyItem of historyItems) {
+            // remove port number and ?
+            let domain = historyItem.url
+                .split("/")[2]
+                .split(":")[0]
+                .split("?")[0];
+            if (!historyDomains[domain]) {
+              historyDomains[domain] = {
+                domain: domain,
+                faviconUrl: "chrome://favicon/size/256@1x/" + historyItem.url,
+                historyItems: [],
+              };
+            }
+            historyDomains[domain].historyItems.push({
+              title: historyItem.title,
+              url: historyItem.url,
+            });
           }
-          historyDomains[domain].historyItems.push({
-            title: historyItem.title,
-            url: historyItem.url,
-          });
+          historyDomains = Object.values(historyDomains);
+          this.setState({ historyDomains });
         }
-        historyDomains = Object.values(historyDomains);
-        this.setState({ historyDomains });
-      }
     );
+
     // init workspaces
     this.initWorkspacesAsync().then();
     // reload current workspace when tabs are created, updated, removed
@@ -946,4 +887,4 @@ const CustomDateCellWrapper = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<Calendar />, document.getElementById("root"));

@@ -18,8 +18,7 @@ chrome.runtime.onMessage.addListener(((message, sender, sendResponse) => {
     }
 }))
 
-// open portal page on startup
-chrome.runtime.onStartup.addListener(() => {
+const createPortalTab = () => {
     // create portal page if not exists
     chrome.tabs.query({currentWindow: true}, tabs => {
         if (!tabs[0].pinned || tabs[0].url !== `chrome-extension://${chrome.runtime.id}/portal.html`) {
@@ -29,7 +28,45 @@ chrome.runtime.onStartup.addListener(() => {
             });
         }
     });
+};
+
+// open portal page on startup
+chrome.runtime.onStartup.addListener(createPortalTab);
+chrome.runtime.onInstalled.addListener(() => {
+    createPortalTab();
+    // load recent history
+    chrome.history.search(
+        {
+            text: "",
+            startTime: Date.now() - 7 * (24 * 60 * 60 * 1000), // start from 1 week ago
+            endTime: Date.now(),
+        },
+        (historyItems) => {
+            let historyDomains = {};
+            for (const historyItem of historyItems) {
+                // remove port number and ?
+                let domain = historyItem.url
+                    .split("/")[2]
+                    .split(":")[0]
+                    .split("?")[0];
+                if (!historyDomains[domain]) {
+                    historyDomains[domain] = {
+                        domain: domain,
+                        faviconUrl: "chrome://favicon/size/256@1x/" + historyItem.url,
+                        historyItems: [],
+                    };
+                }
+                historyDomains[domain].historyItems.push({
+                    title: historyItem.title,
+                    url: historyItem.url,
+                });
+            }
+            historyDomains = Object.values(historyDomains);
+            this.setState({ historyDomains });
+        }
+    );
 });
+
 
 // show portal page when browserAction gets clicked
 chrome.browserAction.onClicked.addListener(() => {

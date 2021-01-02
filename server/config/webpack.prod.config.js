@@ -14,7 +14,7 @@ module.exports = merge(baseConfig, {
             hashFunction: 'sha256',
             hashDigest: 'hex',
             hashDigestLength: 20
-        })
+        }),
     ],
     optimization: {
         minimize: true,
@@ -23,9 +23,9 @@ module.exports = merge(baseConfig, {
                 extractComments: false
             }),
             new OptimizeCSSAssetsPlugin()
-        ]
+        ],
     },
     performance: {
         hints: false
-    }
+    },
 });
