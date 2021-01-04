@@ -1,9 +1,9 @@
-import {restore, save, remove} from '../misc/storage';
+import {remove, restore, save} from './storage';
 
 class NotesManager {
     notes;
     #isSynced;
-    
+
     constructor() {
         this.#isSynced = false;
         restore("notes").then((it) => {
@@ -21,7 +21,7 @@ class NotesManager {
                 console.log(this.notes)
                 this.notes = newNotes["notes"] ? newNotes["notes"] : this.notes;
                 this.notes.push(id);
-                save("", id);  
+                save("", id);
                 this.#isSynced = false;
                 await save(this.notes, "notes");
                 this.#isSynced = true;
@@ -57,10 +57,10 @@ class NotesManager {
                 const newNotes = await restore("notes");
                 this.notes = newNotes["notes"] ? newNotes["notes"] : this.notes;
                 resolve(this.notes);
-    
+
             });
         });
     }
 }
 
-export { NotesManager };
+export {NotesManager};

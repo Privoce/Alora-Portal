@@ -1,8 +1,7 @@
 import {observable} from "mobx";
-import {observer} from "mobx-react";
 
 import {getDomain, getFaviconUrl} from "../misc/utils";
-import {save, restore} from "../misc/storage";
+import {restore, save} from "../notes/storage";
 
 /*
 * Load recent history entries and store to chrome storage
@@ -30,13 +29,13 @@ const Initialize = async () => {
                 });
             }
             historyDomains = Object.values(historyDomains);
-            await save(historyDomains, "quickAccess");
+            await save(historyDomains, "launcher");
             resolve();
         });
     });
 }
 
-class QuickAccessManager {
+class LauncherManager {
 
     historyDomains = observable({});
 
@@ -47,5 +46,5 @@ class QuickAccessManager {
 }
 
 export {
-    Initialize, QuickAccessManager,
+    Initialize, LauncherManager,
 };

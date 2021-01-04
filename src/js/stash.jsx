@@ -1,7 +1,7 @@
 import React from 'react';
 import {Helmet} from "react-helmet";
 import ReactDOM from 'react-dom';
-import { Empty } from 'antd';
+import {Empty} from 'antd';
 
 import '../css/stash.less';
 

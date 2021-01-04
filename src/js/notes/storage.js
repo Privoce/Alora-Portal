@@ -1,5 +1,5 @@
 export const fetchLastEditorId = () => localStorage.getItem("lastEditor");
-export const setLastEditorId = (id) => localStorage.setItem("lastEditor", id);
+export const setLastEditorId = id => localStorage.setItem("lastEditor", id);
 export const resetLastEditorId = () => localStorage.removeItem("lastEditor");
 
 export const save = (data, key) => {

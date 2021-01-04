@@ -1,12 +1,9 @@
 import React from "react";
-import PropTypes, {checkPropTypes} from "prop-types";
-import {observable} from "mobx";
-import {observer} from "mobx-react";
-import {Modal, Button} from "antd";
+import PropTypes from "prop-types";
 import {CloseOutlined} from "@ant-design/icons";
 import {v4 as uuid} from "uuid";
 
-import Style from "../../css/quickAccess.module.less";
+import Style from "../../css/launcher.module.less";
 import {getFaviconUrl} from "../misc/utils";
 
 class Icon extends React.Component {
@@ -27,7 +24,7 @@ Icon.propTypes = {
     url: PropTypes.string.isRequired,
 };
 
-class QuickAccess extends React.Component {
+class Launcher extends React.Component {
     render() {
         return (
             <div className={Style.container}>
@@ -46,5 +43,5 @@ class QuickAccess extends React.Component {
 }
 
 export {
-    QuickAccess
+    Launcher
 };

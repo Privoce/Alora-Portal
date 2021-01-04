@@ -62,7 +62,7 @@ chrome.runtime.onInstalled.addListener(() => {
                 });
             }
             historyDomains = Object.values(historyDomains);
-            this.setState({ historyDomains });
+            this.setState({historyDomains});
         }
     );
 });
@@ -80,7 +80,7 @@ chrome.browserAction.onClicked.addListener(() => {
                     tabs: [tab.index]
                 });
             });
-        } else{
+        } else {
             chrome.tabs.highlight({
                 tabs: [tabs[0].index]
             });
