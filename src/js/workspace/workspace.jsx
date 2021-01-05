@@ -6,7 +6,7 @@ import {format, getDay, parse, startOfWeek} from "date-fns";
 import {Scrollbar} from "react-scrollbars-custom";
 
 import "antd/dist/antd.less";
-import "../../css/workspace.module.less";
+import "../../css/workspace.less";
 
 
 const {TabPane} = Tabs;
@@ -15,15 +15,8 @@ class Workspace extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            historyDomains: [],
             workspaces: [],
             currentWorkspaceId: null,
-            user: {
-                name: "",
-                googleConnect: false,
-                token: "",
-                events: [],
-            },
         };
         this.mainWindowId = null;
         this.stashWindowId = null;
@@ -444,10 +437,10 @@ class Workspace extends React.Component {
                 <Tabs
                     type="editable-card"
                     onEdit={this.onEdit}
-                    activeKey={this.currentWorkspaceId}
+                    activeKey={this.state.currentWorkspaceId}
                     onChange={this.switchToWorkspace}
                 >
-                    {this.workspaces.map((workspace) => (
+                    {this.state.workspaces.map((workspace) => (
                         <TabPane
                             closable={!this.disableDelete}
                             key={workspace.id}

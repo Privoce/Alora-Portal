@@ -1,13 +1,12 @@
-// Import font families
 /* montserrat-regular - latin */
 @font-face {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
-  src: local("Montserrat Regular"), local("Montserrat-Regular"),
-    url("../../public/montserrat-v14-latin-regular.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("../../public/montserrat-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Regular"),
+  local("Montserrat-Regular"),
+  url("../assets/montserrat-v14-latin-regular.woff2") format("woff2"), /* Chrome 26+, Opera 23+, Firefox 39+ */
+  url("../assets/montserrat-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* montserrat-700 - latin */
@@ -15,18 +14,27 @@
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
-  src: local("Montserrat Bold"), local("Montserrat-Bold"),
-    url("../../public/montserrat-v14-latin-700.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("../../public/montserrat-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Bold"),
+  local("Montserrat-Bold"),
+  url("../assets/montserrat-v14-latin-700.woff2") format("woff2"), /* Chrome 26+, Opera 23+, Firefox 39+ */
+  url("../assets/montserrat-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
-// Global font
+/* newyork */
+@font-face {
+  font-family: "New York";
+  font-style: normal;
+  font-weight: 400;
+  src: local("New York"),
+  local("New-York"),
+  url("../assets/NewYorkExtraLarge-Regular.woff2") format("woff2"),
+  url("../assets/NewYorkExtraLarge-Regular.woff") format("woff");
+}
+
 * {
   font-family: "Montserrat", sans-serif;
 }
 
-// Customize scrollbar
 .ScrollbarsCustom-Wrapper {
   right: 3px !important;
 
@@ -39,4 +47,135 @@
   width: 3px !important;
   top: 2px !important;
   height: calc(100% - 4px) !important;
+}
+
+.container--portal {
+  height: 100vh;
+  overflow-y: hidden;
+  margin: -1px 0 2rem;
+  padding-top: 1px;
+}
+
+.home--clock {
+  font-size: 80px;
+  padding: 0;
+  margin: 0;
+  margin-left: 5rem;
+}
+
+.home--username {
+  font-size: 30px;
+  padding: 0;
+  margin: 0;
+  margin-left: 5rem;
+}
+
+.home--weather {
+  svg {
+    color: #dacc0f;
+    font-size: 20px;
+  }
+  margin-top: 10px;
+  margin-left: 5rem;
+  font-size: 15px;
+}
+
+.home--location {
+  svg {
+    color: #000;
+    font-size: 20px;
+  }
+  margin-left: 5rem;
+  font-size: 15px;
+}
+
+.home--history {
+  margin-top: 40px;
+  margin-left: 5rem;
+  margin-right: 40px;
+  font-size: 22px;
+  height: 40vh;
+}
+
+.home--workspace-toolbar {
+  width: 25rem;
+  display: flex;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home--workspace {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 22px;
+    // font-family: "New-York", sans-serif;
+    line-height: 50px;
+    color: #313131;
+  }
+}
+
+.calendar-header {
+  margin-top: 20px;
+}
+
+.workspace-header {
+  padding: 0;
+  margin-top: 20px;
+  margin-bottom: 3px;
+}
+
+.home--calendar-toolbar {
+  width: 25rem;
+  display: flex;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home--calendar {
+    margin-left: 10px;
+    font-size: 22px;
+    // font-family: "New-York", sans-serif;
+    line-height: 50px;
+    color: #313131;
+  }
+}
+
+.site-calendar-demo-card {
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  border-radius: 2px;
+}
+
+.calendar {
+  width: 100%;
+  height: 30vh;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.notes {
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  border: none !important;
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.workspace {
+  margin-top: 20px;
+  height: 85vh;
+}
+
+h2, .home--clock, .home--username, .home--weather, .home--location {
+  font-family: "New York", sans-serif;
 }
