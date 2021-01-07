@@ -3,10 +3,10 @@
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
-  src: local("Montserrat Regular"),
-  local("Montserrat-Regular"),
-  url("../assets/montserrat-v14-latin-regular.woff2") format("woff2"), /* Chrome 26+, Opera 23+, Firefox 39+ */
-  url("../assets/montserrat-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Regular"), local("Montserrat-Regular"),
+    url("../assets/montserrat-v14-latin-regular.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("../assets/montserrat-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* montserrat-700 - latin */
@@ -14,10 +14,10 @@
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
-  src: local("Montserrat Bold"),
-  local("Montserrat-Bold"),
-  url("../assets/montserrat-v14-latin-700.woff2") format("woff2"), /* Chrome 26+, Opera 23+, Firefox 39+ */
-  url("../assets/montserrat-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: local("Montserrat Bold"), local("Montserrat-Bold"),
+    url("../assets/montserrat-v14-latin-700.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("../assets/montserrat-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* newyork */
@@ -25,10 +25,9 @@
   font-family: "New York";
   font-style: normal;
   font-weight: 400;
-  src: local("New York"),
-  local("New-York"),
-  url("../assets/NewYorkExtraLarge-Regular.woff2") format("woff2"),
-  url("../assets/NewYorkExtraLarge-Regular.woff") format("woff");
+  src: local("New York"), local("New-York"),
+    url("../assets/NewYorkExtraLarge-Regular.woff2") format("woff2"),
+    url("../assets/NewYorkExtraLarge-Regular.woff") format("woff");
 }
 
 * {
@@ -52,7 +51,7 @@
 .container--portal {
   height: 100vh;
   overflow-y: hidden;
-  margin: -1px 0 2rem;
+  margin: 0.2rem 0;
   padding-top: 1px;
 }
 
@@ -176,6 +175,10 @@
   height: 85vh;
 }
 
-h2, .home--clock, .home--username, .home--weather, .home--location {
+h2,
+.home--clock,
+.home--username,
+.home--weather,
+.home--location {
   font-family: "New York", sans-serif;
 }

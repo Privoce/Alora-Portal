@@ -8,8 +8,7 @@
     "storage",
     "history",
     "chrome://favicon/",
-    "*://papo.privoce.com/*",
-    "*://auth.privoce.com/*"
+    "https://*/"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; img-src chrome://favicon;",
   "background": {
