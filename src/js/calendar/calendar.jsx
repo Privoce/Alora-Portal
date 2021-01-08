@@ -5,7 +5,7 @@ import {
   Views,
 } from "react-big-calendar";
 import { Row, Button } from "antd";
-import { format, getDay, parse, startOfWeek } from "date-fns";
+import { format, getDay, parse, startOfWeek, isTheSameDay } from "date-fns";
 import {
   FaExternalLinkAlt,
   FaGoogle,
@@ -61,6 +61,14 @@ class Calendar extends React.Component {
       getDay,
       locales,
     });
+
+    const isTheSameDay = (date1, date2) => {
+      return (
+        date1.getDate() == date2.getDate() &&
+        date1.getMonth() == date2.getMonth() &&
+        date1.getFullYear() == date2.getFullYear()
+      );
+    };
 
     return (
       <div className="calendar--container">
@@ -119,7 +127,7 @@ class Calendar extends React.Component {
         ) : (
           <>
             <div className="social-auth--container">
-              <button onClick={this.loginHandle}>
+              <button onClick={this.props.onLogin}>
                 <FaGoogle />
                 Login with Google
               </button>
