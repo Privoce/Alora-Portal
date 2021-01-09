@@ -80,7 +80,6 @@
   "dependencies": {
     "date-fns": "^2.16.1",
     "lodash.debounce": "^4.0.8",
-    "react-big-calendar": "^0.28.6",
     "react-promise": "^3.0.2",
     "rich-markdown-editor": "^11.0.9",
     "socket.io-client": "^3.0.5",

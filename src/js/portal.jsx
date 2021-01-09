@@ -189,6 +189,7 @@ class App extends React.Component {
         localStorage.setItem("userId", userData.user._id);
 
         globalThis.socket.emit("storeClientInfo", userData.user);
+        globalThis.getEventsFromServer();
 
         setTimeout(() => {
           chrome.tabs.remove(tabId);
