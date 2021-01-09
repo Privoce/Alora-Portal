@@ -1,42 +1,10 @@
 import React from "react";
-import {
-  Calendar as BigCalendar,
-  dateFnsLocalizer,
-  Views,
-} from "react-big-calendar";
 import { Row, Button } from "antd";
-import { format, getDay, parse, startOfWeek } from "date-fns";
-import {
-  FaExternalLinkAlt,
-  FaGoogle,
-  FaArrowRight,
-  FaArrowLeft,
-} from "react-icons/fa";
+import { format, addDays, subDays } from "date-fns";
+import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../../css/calendar.less";
-
-const CustomToolbar = () => {
-  return <></>;
-};
-
-const CustomTimeGutterHeader = (onClick) => {
-  return (
-    <div>
-      <button className="calendar--card-today" onClick={onClick}>
-        Today
-      </button>
-    </div>
-  );
-};
-
-const CustomDateCellWrapper = (date) => {
-  return (
-    <div className="calendar--card-date">
-      <p>{format(date, "dd MMMM, yyyy")}</p>
-    </div>
-  );
-};
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -51,16 +19,13 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const locales = {
-      "en-US": require("date-fns/locale/en-US"),
+    const isTheSameDay = (date1, date2) => {
+      return (
+        date1.getDate() == date2.getDate() &&
+        date1.getMonth() == date2.getMonth() &&
+        date1.getFullYear() == date2.getFullYear()
+      );
     };
-    const localizer = dateFnsLocalizer({
-      format,
-      parse,
-      startOfWeek,
-      getDay,
-      locales,
-    });
 
     return (
       <div className="calendar--container">
@@ -74,7 +39,7 @@ class Calendar extends React.Component {
                 });
               }}
             >
-              <FaArrowLeft />
+              <BsChevronLeft />
             </Button>
             <Button
               className="arrow--btn"
@@ -84,7 +49,7 @@ class Calendar extends React.Component {
                 });
               }}
             >
-              <FaArrowRight />
+              <BsChevronRight />
             </Button>
             <div className="header-date">
               <p>{format(this.state.currentDate, "dd MMMM, yyyy")}</p>
@@ -111,28 +76,44 @@ class Calendar extends React.Component {
               (item) =>
                 isTheSameDay(item.start, this.state.currentDate) && (
                   <div className="event--card">
-                    <p>{item.title}</p>
+                    <p>{`${item.title[0].toUpperCase()}${item.title.slice(
+                      1
+                    )}`}</p>
+                    {item.allDay ? (
+                      <p>All day</p>
+                    ) : (
+                      <p>
+                        {format(item.start, "HH:mm")} -{" "}
+                        {format(item.end, "HH:mm")}
+                      </p>
+                    )}
                   </div>
                 )
+            )}
+            {this.props.user.events.length === 0 && (
+              <p className="event--no-event">No upcoming events</p>
             )}
           </div>
         ) : (
           <>
+            <div className="sign-in-label">Sign in to preview your agenda</div>
             <div className="social-auth--container">
-              <button onClick={this.loginHandle}>
+              <button onClick={this.props.onLogin}>
                 <FaGoogle />
-                Login with Google
+                Sign in with Google
               </button>
             </div>
           </>
         )}
-        <a
-          className="google-calendar-link"
-          href="https://calendar.google.com/calendar/u/0/r"
-          target="_blank"
-        >
-          <FaExternalLinkAlt />
-        </a>
+        <div className="link--container">
+          <a
+            className="google-calendar-link"
+            href="https://calendar.google.com/calendar/u/0/r"
+            target="_blank"
+          >
+            <FaExternalLinkAlt />
+          </a>
+        </div>
       </div>
     );
   }

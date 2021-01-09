@@ -24,15 +24,23 @@ class Icon extends React.Component {
     super(props);
 
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleOpenApp = this.handleOpenApp.bind(this);
   }
 
   handleDelete() {
     this.props.deleteCallback(this.props.name);
   }
 
+  handleOpenApp() {
+    this.props.openAppCallback(this.props.url);
+  }
+
   render() {
     return (
-      <div className={`${Style.icon} ${this.props.selected && Style.selected}`}>
+      <button
+        className={`${Style.icon} ${this.props.selected && Style.selected}`}
+        onClick={this.handleOpenApp}
+      >
         <img
           src={getFaviconUrl(this.props.url)}
           alt=""
@@ -41,7 +49,7 @@ class Icon extends React.Component {
         <button className={Style.closeBtn} onClick={this.handleDelete}>
           <CloseOutlined />
         </button>
-      </div>
+      </button>
     );
   }
 }
@@ -51,6 +59,7 @@ Icon.propTypes = {
   url: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   deleteCallback: PropTypes.func.isRequired,
+  openAppCallback: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
 };
 
@@ -87,6 +96,7 @@ class Launcher extends React.Component {
     this.handleDone = this.handleDone.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.handleDeleteApp = this.handleDeleteApp.bind(this);
+    this.handleOpenApp = this.handleOpenApp.bind(this);
     this.deleteApp = this.deleteApp.bind(this);
   }
 
@@ -251,6 +261,12 @@ class Launcher extends React.Component {
     this.toggleDeleteModal();
   }
 
+  handleOpenApp(url) {
+    chrome.tabs.create({
+      url: url,
+    });
+  }
+
   deleteApp() {
     const newApps = this.state.myApps.filter(
       (app) => app.name !== this.state.deleteAppName
@@ -288,6 +304,7 @@ class Launcher extends React.Component {
             url={app.url}
             name={app.name}
             deleteCallback={this.handleDeleteApp}
+            openAppCallback={this.handleOpenApp}
             selected={app.selected}
           />
         ))}

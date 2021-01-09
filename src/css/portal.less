@@ -152,7 +152,7 @@
 
 .calendar {
   width: 100%;
-  height: 30vh;
+  height: 35vh;
   margin-top: 10px;
   margin-bottom: 30px;
 }
@@ -181,4 +181,24 @@ h2,
 .home--weather,
 .home--location {
   font-family: "New York", sans-serif;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.2);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  border: 20px solid rgba(0, 0, 0, 0.2);
 }
