@@ -1,30 +1,36 @@
 .container {
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
+  flex-flow: row wrap;
   justify-content: flex-start;
+  align-content: flex-start;
+  height: 100%;
+  margin: -1px;
+  padding: 1px;
 }
 
 .icon {
   position: relative;
-  background-color: transparent;
-  border: none;
-  width: 60px;
-  height: 60px;
-  margin-right: 10px;
-  margin-bottom: 25px;
+  width: 52px;
+  height: 52px;
+  margin: 14px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
   border-radius: 15px;
   overflow: hidden;
   transition: all 200ms ease-in-out;
   cursor: pointer;
+  text-align: center;
 
   &:hover {
     box-shadow: 0 0 6px rgb(65, 148, 181, 0.5);
   }
 
+  &:active, &:focus {
+    box-shadow: 0 0 6px rgb(248, 1, 1, 0.5);
+  }
+
   img {
-    max-height: 100%;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
   }
 
   .closeBtn {
@@ -33,47 +39,71 @@
     border: none;
     right: 0;
     top: 0;
-    width: 25px;
-    height: 25px;
+    width: 18px;
+    height: 18px;
     padding-top: 2px;
-    background-color: rgba(255, 0, 0, 0.25);
+    background-color: #ff0000;
+    opacity: 0;
     border-bottom-left-radius: 5px;
     text-align: center;
     transition: all 200ms ease-in-out;
 
     &:hover {
-      background-color: rgba(255, 0, 0, 1);
+      background-color: #ff0000;
       cursor: pointer;
+      opacity: 0.35;
+    }
+
+    &:active, &:focus {
+      background-color: #ff0000;
+      cursor: pointer;
+      opacity: 0.65;
     }
 
     span {
       margin: auto;
       color: #ffffff;
-      font-size: 15px;
+      font-size: 12px;
+      line-height: 12px;
     }
   }
 
   .addBtn {
-    font-size: 20px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
+    font-size: 24px;
+    line-height: 24px;
+    margin-top: 14px;
+  }
+}
 
-    &:hover {
-      border: none;
-    }
+.detailList {
+  height: 400px;
+  width: 300px;
 
-    &:active {
-      border: none;
+  :global .ant-list-item-meta-title, :global .ant-list-item-meta-description {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  :global .ant-popover-inner-content {
+    width: 280px;
+  }
+}
+
+.fixLoadingBtn {
+  :global .ant-btn-loading-icon {
+    span {
+      padding-left: 8px;
+      margin-left: -8px;
     }
   }
 }
 
-.selected {
-  border: solid 2px #f33;
+.fixScrollbar {
+  :global .ScrollbarsCustom-Track {
+    top: 0 !important;
+    height: 100% !important;
+    width: 4px !important;
+    opacity: 0.5;
+  }
 }
