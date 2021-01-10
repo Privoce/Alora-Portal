@@ -258,10 +258,10 @@ class App extends React.Component {
           {
             // We should replace them with antd's Card Componment
           }
-          <div className="home--calendar-toolbar calendar-header">
-            <img src={calendarImg} alt="" />
-            <h2 className="home--calendar">Calendar</h2>
-          </div>
+          {/*<div className="home--calendar-toolbar calendar-header">*/}
+          {/*  <img src={calendarImg} alt="" />*/}
+          {/*  <h2 className="home--calendar">Calendar</h2>*/}
+          {/*</div>*/}
           <div className="site-calendar-demo-card">
             <div className="calendar">
               <Calendar onLogin={this.loginHandle} user={user} />
@@ -269,10 +269,10 @@ class App extends React.Component {
           </div>
 
           <div className="note-container">
-            <div className="home--calendar-toolbar calendar-header">
-              <img src={noteIcon} alt="" />
-              <h2 className="home--calendar">Notes</h2>
-            </div>
+            {/*<div className="home--calendar-toolbar calendar-header">*/}
+            {/*  <img src={noteIcon} alt="" />*/}
+            {/*  <h2 className="home--calendar">Notes</h2>*/}
+            {/*</div>*/}
             <div className="site-calendar-demo-card">
               <div className="notes">
                 <Notes />
@@ -282,10 +282,10 @@ class App extends React.Component {
         </Col>
 
         <Col span={9}>
-          <div className="home--workspace-toolbar workspace-header">
-            <img src={workspaceImg} alt="" />
-            <h2 className="home--workspace">Workspace</h2>
-          </div>
+          {/*<div className="home--workspace-toolbar workspace-header">*/}
+          {/*  <img src={workspaceImg} alt="" />*/}
+          {/*  <h2 className="home--workspace">Workspace</h2>*/}
+          {/*</div>*/}
           <div className="workspace">
             <Workspace />
           </div>
