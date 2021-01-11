@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Button } from "antd";
-import { format, addDays, subDays } from "date-fns";
+import { format, addDays, subDays, isEqual, isSameDay } from "date-fns";
 import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
@@ -16,6 +16,15 @@ class Calendar extends React.Component {
       currentDate: new Date(),
       events: [],
     };
+  }
+
+  componentDidUpdate() {
+    console.log(
+      this.state.currentDate,
+      "----------------",
+      new Date(),
+      isSameDay(this.state.currentDate, new Date())
+    );
   }
 
   render() {
@@ -57,7 +66,9 @@ class Calendar extends React.Component {
           </Row>
           <div>
             <button
-              className="calendar--card-today"
+              className={`calendar--card-today ${
+                !isSameDay(this.state.currentDate, new Date()) && "not-today"
+              }`}
               style={this.state.buttonStyle}
               onClick={() => {
                 this.setState({
