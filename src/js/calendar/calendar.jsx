@@ -18,15 +18,6 @@ class Calendar extends React.Component {
     };
   }
 
-  componentDidUpdate() {
-    console.log(
-      this.state.currentDate,
-      "----------------",
-      new Date(),
-      isSameDay(this.state.currentDate, new Date())
-    );
-  }
-
   render() {
     const isTheSameDay = (date1, date2) => {
       return (

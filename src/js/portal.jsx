@@ -101,6 +101,14 @@ class App extends React.Component {
           events,
         },
       });
+      // If return no events, i clean on state too
+    } else {
+      this.setState({
+        user: {
+          ...this.state.user,
+          events: [],
+        },
+      });
     }
   }
 
