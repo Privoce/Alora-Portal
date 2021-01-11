@@ -14,7 +14,8 @@
     "allowJs": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+	"skipLibCheck": true
   },
   "awesomeTypescriptLoaderOptions": {
     "silent": true

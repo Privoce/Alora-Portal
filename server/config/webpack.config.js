@@ -25,12 +25,10 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 use: ["babel-loader"],
-                exclude: /node_modules/,
             },
             {
                 test: /\.tsx?$/,
                 use: ["awesome-typescript-loader"],
-                exclude: /node_modules/,
             },
             {
                 test: /\.(png|jpg|gif|woff2?)$/,

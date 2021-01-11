@@ -4,8 +4,7 @@
       "@babel/preset-env",
       {
         "targets": {
-          "edge": "17",
-          "chrome": "67"
+          "chrome": "84"
         }
       }
     ],
@@ -17,6 +16,6 @@
     ["@babel/plugin-proposal-decorators", {"legacy": true}],
     ["@babel/plugin-proposal-class-properties", {"loose": true}],
     "@babel/proposal-object-rest-spread",
-    ["babel-plugin-import", {"libraryName": "antd"}]
+    ["babel-plugin-import", {libraryName: "antd", style: true}]
   ]
 }
