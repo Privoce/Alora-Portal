@@ -38,6 +38,7 @@ class App extends React.Component {
         region: "",
         temp: "",
       },
+      hour: "",
     };
 
     this.socket = null;
@@ -50,9 +51,11 @@ class App extends React.Component {
     const hour = date.getHours();
     const minutes = date.getMinutes();
 
-    return `${hour < 10 ? "0" : ""}${hour}:${
-      minutes < 10 ? "0" : ""
-    }${minutes}`;
+    this.setState({
+      hour: `${hour < 10 ? "0" : ""}${hour}:${
+        minutes < 10 ? "0" : ""
+      }${minutes}`,
+    });
   };
 
   async getEventsFromServer() {
@@ -236,14 +239,20 @@ class App extends React.Component {
     );
 
     this.getLocationAndWeather();
+
+    // update clock every minute
+    this.getHour();
+    setInterval(() => {
+      this.getHour();
+    }, 60000);
   }
 
   render() {
-    const { location, user } = this.state;
+    const { location, user, hour } = this.state;
     return (
       <Row className="container--portal">
         <Col span={6}>
-          <h1 className="home--clock">{this.getHour()}</h1>
+          <h1 className="home--clock">{hour}</h1>
           <h1 className="home--username">
             Welcome{" "}
             {user.name
