@@ -216,6 +216,9 @@ class App extends React.Component {
         setTimeout(() => {
           chrome.tabs.remove(tabId);
           chrome.tabs.onUpdated.removeListener(authorizationHook);
+          chrome.tabs.highlight({
+            tabs: [0],
+          });
         }, 1000);
       }
     });
