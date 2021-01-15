@@ -12,7 +12,7 @@
 
 ## :white_check_mark: How to Install
 
-Install [nodejs] (https://nodejs.org/en/) (used nvm on the server).
+Install [nodejs](https://nodejs.org/en/)
 
 Clone the project:
 
@@ -40,6 +40,12 @@ yarn
 - If there is `package-lock.json` and` yarn-lock.json` (`package.json` is totally different from` package-lock.json`) there will be an error in npm by using two dependency managers, delete one .
 
 ## :white_check_mark: To run the application in your browser you must:
+
+```bash
+npm start
+#or
+yarn start
+```
 
 - Go to More Tools -> Extensions
 - Click on Load Unpacked and download the Build file
