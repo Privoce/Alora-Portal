@@ -16,6 +16,7 @@ import workspaceImg from "../assets/workspace.png";
 import gpsIcon from "../assets/gps-icon.png";
 import sunIcon from "../assets/sun-icon.png";
 import noteIcon from "../assets/notes.png";
+import loadingGif from "../assets/loading.gif";
 import { Calendar } from "./calendar/calendar";
 
 import { OPEN_WEATHER_API_KEY, BACKEND_URL } from "./misc/variables";
@@ -39,6 +40,7 @@ class App extends React.Component {
         temp: "",
       },
       hour: "",
+      eventLoading: true,
     };
 
     this.socket = null;
@@ -66,12 +68,20 @@ class App extends React.Component {
       return;
     }
 
+    this.setState({
+      eventLoading: true,
+    });
+
     const response = await fetch(`${BACKEND_URL}user/calendar`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "x-access-token": user.token,
       },
+    });
+
+    this.setState({
+      eventLoading: false,
     });
 
     if (response.status > 204) {
@@ -248,7 +258,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { location, user, hour } = this.state;
+    const { location, user, hour, eventLoading } = this.state;
     return (
       <Row className="container--portal">
         <Col span={6}>
@@ -281,7 +291,11 @@ class App extends React.Component {
           {/*</div>*/}
           <div className="site-calendar-demo-card">
             <div className="calendar">
-              <Calendar onLogin={this.loginHandle} user={user} />
+              <Calendar
+                onLogin={this.loginHandle}
+                user={user}
+                eventLoading={eventLoading}
+              />
             </div>
           </div>
 
