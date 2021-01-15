@@ -253,6 +253,7 @@ class App extends React.Component {
     // update clock every minute
     this.getHour();
     setInterval(() => {
+      this.getLocationAndWeather();
       this.getHour();
     }, 60000);
   }
