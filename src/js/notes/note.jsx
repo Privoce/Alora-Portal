@@ -151,6 +151,12 @@ export function Notes() {
                 />
             </div>
             {
+                notes.length == 0 &&
+                <div className="no-notes">
+                    <p>Press the <span>+</span> to add a note!</p>
+                </div>
+            }
+            {
                 notes.map((note) => {
                     return <PreviewBlock id={note} handleDelete={handleDelete} setId={setId}/>
                 })

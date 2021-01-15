@@ -19,13 +19,20 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const isTheSameDay = (date1, date2) => {
-      return (
-        date1.getDate() == date2.getDate() &&
-        date1.getMonth() == date2.getMonth() &&
-        date1.getFullYear() == date2.getFullYear()
-      );
+    const isTheSameDay = (date, date2) => {
+      if (date.allDay) return isSameDay(date.end, date2)
+      return isSameDay(date.start, date2)
     };
+
+    const isOngoingEvent = (date) => {
+      let currentTime = new Date()
+      if (date.allDay && isSameDay(date.end, currentTime))
+        return true
+      return (
+        date.start < currentTime &&
+        date.end > currentTime
+      )
+    }
 
     return (
       <div className="calendar--container">
@@ -76,8 +83,8 @@ class Calendar extends React.Component {
           <div className="events--container">
             {this.props.user.events.map(
               (item) =>
-                isTheSameDay(item.start, this.state.currentDate) && (
-                  <div className="event--card">
+                isTheSameDay(item, this.state.currentDate) && (
+                  <div className={ isOngoingEvent(item) ? "event--card ongoing-event" : "event--card" }>
                     <p>{`${item.title[0].toUpperCase()}${item.title.slice(
                       1
                     )}`}</p>
