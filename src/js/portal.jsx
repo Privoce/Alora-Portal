@@ -42,6 +42,7 @@ class App extends React.Component {
     };
 
     this.socket = null;
+    this.timer = null;
     this.loginHandle = this.loginHandle.bind(this);
     this.getEventsFromServer = this.getEventsFromServer.bind(this);
   }
@@ -242,9 +243,13 @@ class App extends React.Component {
 
     // update clock every minute
     this.getHour();
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.getHour();
-    }, 60000);
+    }, 40000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {

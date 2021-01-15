@@ -1,6 +1,13 @@
 import React from "react";
 import { Row, Button } from "antd";
-import { format, addDays, subDays, isEqual, isSameDay } from "date-fns";
+import {
+  format,
+  addDays,
+  subDays,
+  isSameDay,
+  isTomorrow,
+  addMinutes,
+} from "date-fns";
 import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
@@ -18,21 +25,32 @@ class Calendar extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // change the currente date when change day
+    this.timer = setInterval(() => {
+      if (isTomorrow(addMinutes(new Date()))) {
+        this.setState({
+          currentDate: addMinutes(new Date()),
+        });
+      }
+    }, 20000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   render() {
     const isTheSameDay = (date, date2) => {
-      if (date.allDay) return isSameDay(date.end, date2)
-      return isSameDay(date.start, date2)
+      if (date.allDay) return isSameDay(date.end, date2);
+      return isSameDay(date.start, date2);
     };
 
     const isOngoingEvent = (date) => {
-      let currentTime = new Date()
-      if (date.allDay && isSameDay(date.end, currentTime))
-        return true
-      return (
-        date.start < currentTime &&
-        date.end > currentTime
-      )
-    }
+      let currentTime = new Date();
+      if (date.allDay && isSameDay(date.end, currentTime)) return true;
+      return date.start < currentTime && date.end > currentTime;
+    };
 
     return (
       <div className="calendar--container">
@@ -84,7 +102,13 @@ class Calendar extends React.Component {
             {this.props.user.events.map(
               (item) =>
                 isTheSameDay(item, this.state.currentDate) && (
-                  <div className={ isOngoingEvent(item) ? "event--card ongoing-event" : "event--card" }>
+                  <div
+                    className={
+                      isOngoingEvent(item)
+                        ? "event--card ongoing-event"
+                        : "event--card"
+                    }
+                  >
                     <p>{`${item.title[0].toUpperCase()}${item.title.slice(
                       1
                     )}`}</p>
