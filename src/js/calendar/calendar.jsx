@@ -66,9 +66,9 @@ class Calendar extends React.Component {
   componentDidMount() {
     // change the currente date when change day
     this.timer = setInterval(() => {
-      if (isTomorrow(addMinutes(new Date()))) {
+      if (isTomorrow(addMinutes(new Date(), 1))) {
         this.setState({
-          currentDate: addMinutes(new Date()),
+          currentDate: addMinutes(new Date(), 1),
         });
       }
     }, 20000);
