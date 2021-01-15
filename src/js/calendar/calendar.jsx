@@ -147,12 +147,10 @@ class Calendar extends React.Component {
               <center>
                 <img src={loadingGif} className="calendar--image-load" />
               </center>
-            ) : (
-              this.props.user.events.length === 0 ||
-              (!this.state.todayEvents && (
-                <p className="event--no-event">No upcoming events</p>
-              ))
-            )}
+            ) : this.props.user.events.length === 0 ||
+              !this.state.todayEvents ? (
+              <p className="event--no-event">No upcoming events</p>
+            ) : null}
           </div>
         ) : (
           <>
