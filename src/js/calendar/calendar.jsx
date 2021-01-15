@@ -1,6 +1,13 @@
 import React from "react";
 import { Row, Button } from "antd";
-import { format, addDays, subDays, isEqual, isSameDay } from "date-fns";
+import {
+  format,
+  addDays,
+  subDays,
+  isSameDay,
+  isTomorrow,
+  addMinutes,
+} from "date-fns";
 import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import loadingGif from "../../assets/loading.gif";
@@ -54,6 +61,21 @@ class Calendar extends React.Component {
     this.setState({
       currentDate: new Date(),
     });
+  }
+
+  componentDidMount() {
+    // change the currente date when change day
+    this.timer = setInterval(() => {
+      if (isTomorrow(addMinutes(new Date(), 1))) {
+        this.setState({
+          currentDate: addMinutes(new Date(), 1),
+        });
+      }
+    }, 20000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {
@@ -125,12 +147,10 @@ class Calendar extends React.Component {
               <center>
                 <img src={loadingGif} className="calendar--image-load" />
               </center>
-            ) : (
-              this.props.user.events.length === 0 ||
-              (!this.state.todayEvents && (
-                <p className="event--no-event">No upcoming events</p>
-              ))
-            )}
+            ) : this.props.user.events.length === 0 ||
+              !this.state.todayEvents ? (
+              <p className="event--no-event">No upcoming events</p>
+            ) : null}
           </div>
         ) : (
           <>

@@ -1,25 +1,25 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { observer } from "mobx-react";
-import { Col, Row } from "antd";
-import socketIOClient from "socket.io-client";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { observer } from 'mobx-react';
+import { Col, Row } from 'antd';
+import socketIOClient from 'socket.io-client';
 
-import { Launcher } from "./launcher/launcher";
-import { Workspace } from "./workspace/workspace";
-import { Notes } from "./notes/note";
+import { Launcher } from './launcher/launcher';
+import { Workspace } from './workspace/workspace';
+import { Notes } from './notes/note';
 
-import "antd/dist/antd.less";
-import "../css/portal.less";
+import 'antd/dist/antd.less';
+import '../css/portal.less';
 
-import calendarImg from "../assets/calendar.png";
-import workspaceImg from "../assets/workspace.png";
-import gpsIcon from "../assets/gps-icon.png";
-import sunIcon from "../assets/sun-icon.png";
-import noteIcon from "../assets/notes.png";
-import loadingGif from "../assets/loading.gif";
-import { Calendar } from "./calendar/calendar";
+import calendarImg from '../assets/calendar.png';
+import workspaceImg from '../assets/workspace.png';
+import gpsIcon from '../assets/gps-icon.png';
+import sunIcon from '../assets/sun-icon.png';
+import noteIcon from '../assets/notes.png';
+import loadingGif from '../assets/loading.gif';
+import { Calendar } from './calendar/calendar';
 
-import { OPEN_WEATHER_API_KEY, BACKEND_URL } from "./misc/variables";
+import { OPEN_WEATHER_API_KEY, BACKEND_URL } from './misc/variables';
 @observer
 class App extends React.Component {
   constructor(props) {
@@ -29,21 +29,22 @@ class App extends React.Component {
       workspaces: [],
       currentWorkspaceId: null,
       user: {
-        name: "",
+        name: '',
         googleConnect: false,
-        token: "",
+        token: '',
         events: [],
       },
       location: {
-        city: "",
-        region: "",
-        temp: "",
+        city: '',
+        region: '',
+        temp: '',
       },
-      hour: "",
+      hour: '',
       eventLoading: true,
     };
 
     this.socket = null;
+    this.timer = null;
     this.loginHandle = this.loginHandle.bind(this);
     this.getEventsFromServer = this.getEventsFromServer.bind(this);
   }
@@ -54,8 +55,8 @@ class App extends React.Component {
     const minutes = date.getMinutes();
 
     this.setState({
-      hour: `${hour < 10 ? "0" : ""}${hour}:${
-        minutes < 10 ? "0" : ""
+      hour: `${hour < 10 ? '0' : ''}${hour}:${
+        minutes < 10 ? '0' : ''
       }${minutes}`,
     });
   };
@@ -64,7 +65,7 @@ class App extends React.Component {
     const { user } = this.state;
 
     // if dont have google account connected
-    if (!user.googleConnect || user.token == "") {
+    if (!user.googleConnect || user.token == '') {
       return;
     }
 
@@ -73,10 +74,10 @@ class App extends React.Component {
     });
 
     const response = await fetch(`${BACKEND_URL}user/calendar`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        "x-access-token": user.token,
+        'Content-Type': 'application/json',
+        'x-access-token': user.token,
       },
     });
 
@@ -85,13 +86,13 @@ class App extends React.Component {
     });
 
     if (response.status > 204) {
-      return alert("Session expired!");
+      return alert('Session expired!');
     }
 
     const data = await response.json();
 
     if (data.events && data.events.length > 0) {
-      const events = data.events.map((event) => ({
+      const events = data.events.map(event => ({
         id: event.id,
         start: event.start.date
           ? new Date(event.start.date)
@@ -126,10 +127,10 @@ class App extends React.Component {
   }
 
   async getLocationAndWeather() {
-    const locationResponse = await fetch("http://ip-api.com/json/", {
-      method: "GET",
+    const locationResponse = await fetch('http://ip-api.com/json/', {
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -138,9 +139,9 @@ class App extends React.Component {
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${locationData.city},${locationData.region},br&appid=${OPEN_WEATHER_API_KEY}`;
 
     const weatherResponse = await fetch(weatherUrl, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -166,30 +167,30 @@ class App extends React.Component {
     chrome.tabs.onUpdated.addListener(async function authorizationHook(
       tabId,
       changeInfo,
-      tab
+      tab,
     ) {
       //If you don't have the authentication tab id remove that part
-      if (tab.title.indexOf("token=") >= 0) {
+      if (tab.title.indexOf('token=') >= 0) {
         //tab url consists of access_token
         var url = new URL(tab.url);
         const urlParams = new URLSearchParams(url.search);
-        const token = urlParams.get("token");
+        const token = urlParams.get('token');
 
         if (!token) {
-          alert("Error");
+          alert('Error');
           return;
         }
 
         const userResponse = await fetch(`${BACKEND_URL}auth/me`, {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token,
+            'Content-Type': 'application/json',
+            'x-access-token': token,
           },
         });
 
         if (userResponse.status !== 200) {
-          return alert("User not found");
+          return alert('User not found');
         }
 
         const userData = await userResponse.json();
@@ -204,17 +205,20 @@ class App extends React.Component {
         });
 
         //save on localstorage
-        localStorage.setItem("nickname", userData.user.nickname);
-        localStorage.setItem("googleConnect", "true");
-        localStorage.setItem("token", token);
-        localStorage.setItem("userId", userData.user._id);
+        localStorage.setItem('nickname', userData.user.nickname);
+        localStorage.setItem('googleConnect', 'true');
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userData.user._id);
 
-        globalThis.socket.emit("storeClientInfo", userData.user);
+        globalThis.socket.emit('storeClientInfo', userData.user);
         globalThis.getEventsFromServer();
 
         setTimeout(() => {
           chrome.tabs.remove(tabId);
           chrome.tabs.onUpdated.removeListener(authorizationHook);
+          chrome.tabs.highlight({
+            tabs: [0],
+          });
         }, 1000);
       }
     });
@@ -223,16 +227,16 @@ class App extends React.Component {
   componentDidMount() {
     this.socket = socketIOClient(BACKEND_URL);
 
-    const googleConected = localStorage.getItem("googleConnect");
-    const nickname = localStorage.getItem("nickname");
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
+    const googleConected = localStorage.getItem('googleConnect');
+    const nickname = localStorage.getItem('nickname');
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
 
-    if (googleConected === "true") {
-      this.socket.emit("storeClientInfo", { nickname, _id: userId });
+    if (googleConected === 'true') {
+      this.socket.emit('storeClientInfo', { nickname, _id: userId });
     }
 
-    this.socket.on("new-event", (data) => {
+    this.socket.on('new-event', data => {
       this.getEventsFromServer();
     });
 
@@ -242,10 +246,10 @@ class App extends React.Component {
           ...this.state.user,
           name: nickname,
           token,
-          googleConnect: googleConected === "true",
+          googleConnect: googleConected === 'true',
         },
       },
-      () => this.getEventsFromServer()
+      () => this.getEventsFromServer(),
     );
 
     this.getLocationAndWeather();
@@ -255,7 +259,11 @@ class App extends React.Component {
     setInterval(() => {
       this.getLocationAndWeather();
       this.getHour();
-    }, 60000);
+    }, 40000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {
@@ -265,16 +273,16 @@ class App extends React.Component {
         <Col span={6}>
           <h1 className="home--clock">{hour}</h1>
           <h1 className="home--username">
-            Welcome{" "}
+            Welcome{' '}
             {user.name
               ? `${user.name.charAt(0).toUpperCase()}${user.name.slice(1)}`
-              : "User"}
+              : 'User'}
           </h1>
           <p className="home--weather">
             <img src={sunIcon} width={20} height={20} /> {location.temp}° C
           </p>
           <p className="home--location">
-            <img src={gpsIcon} width={17} height={17} /> {location.city},{" "}
+            <img src={gpsIcon} width={17} height={17} /> {location.city},{' '}
             {location.region}
           </p>
           <div className="home--history">
@@ -327,4 +335,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
