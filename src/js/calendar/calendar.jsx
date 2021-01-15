@@ -10,7 +10,7 @@ import {
 } from "date-fns";
 import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-
+import loadingGif from "../../assets/loading.gif";
 import "../../css/calendar.less";
 
 class Calendar extends React.Component {
@@ -22,7 +22,45 @@ class Calendar extends React.Component {
       currentWorkspaceId: null,
       currentDate: new Date(),
       events: [],
+      todayEvents: true,
     };
+    this.nextDay = this.nextDay.bind(this);
+    this.prevDay = this.prevDay.bind(this);
+    this.currentDay = this.currentDay.bind(this);
+  }
+
+  checkEvents(date) {
+    const check = this.props.user.events.find((evento) =>
+      isSameDay(evento.start, date)
+    );
+
+    this.setState({
+      todayEvents: check,
+    });
+  }
+
+  nextDay() {
+    this.checkEvents(addDays(this.state.currentDate, 1));
+
+    this.setState({
+      currentDate: addDays(this.state.currentDate, 1),
+    });
+  }
+
+  prevDay() {
+    this.checkEvents(subDays(this.state.currentDate, 1));
+
+    this.setState({
+      currentDate: subDays(this.state.currentDate, 1),
+    });
+  }
+
+  currentDay() {
+    this.checkEvents(new Date());
+
+    this.setState({
+      currentDate: new Date(),
+    });
   }
 
   componentDidMount() {
@@ -56,24 +94,10 @@ class Calendar extends React.Component {
       <div className="calendar--container">
         <div className="calendar-footer--container">
           <Row className="header-left">
-            <Button
-              className="arrow--btn"
-              onClick={() => {
-                this.setState({
-                  currentDate: subDays(this.state.currentDate, 1),
-                });
-              }}
-            >
+            <Button className="arrow--btn" onClick={this.prevDay}>
               <BsChevronLeft />
             </Button>
-            <Button
-              className="arrow--btn"
-              onClick={() => {
-                this.setState({
-                  currentDate: addDays(this.state.currentDate, 1),
-                });
-              }}
-            >
+            <Button className="arrow--btn" onClick={this.nextDay}>
               <BsChevronRight />
             </Button>
             <div className="header-date">
@@ -86,11 +110,7 @@ class Calendar extends React.Component {
                 !isSameDay(this.state.currentDate, new Date()) && "not-today"
               }`}
               style={this.state.buttonStyle}
-              onClick={() => {
-                this.setState({
-                  currentDate: new Date(),
-                });
-              }}
+              onClick={this.currentDay}
             >
               Today
             </button>
@@ -123,8 +143,15 @@ class Calendar extends React.Component {
                   </div>
                 )
             )}
-            {this.props.user.events.length === 0 && (
-              <p className="event--no-event">No upcoming events</p>
+            {this.props.eventLoading ? (
+              <center>
+                <img src={loadingGif} className="calendar--image-load" />
+              </center>
+            ) : (
+              this.props.user.events.length === 0 ||
+              (!this.state.todayEvents && (
+                <p className="event--no-event">No upcoming events</p>
+              ))
             )}
           </div>
         ) : (
