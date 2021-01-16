@@ -11,22 +11,22 @@ const arrContentScriptClient = resolve(__dirname, "../util/arrContentScriptClien
 const arrBackgroundClient = resolve(__dirname, "../util/arrBackgroundClient.js");
 
 for (let entryName in baseConfig.entry) {
-    if (CONTENT_SCRIPT_CHUNKS.includes(entryName)) {
-        baseConfig.entry[entryName].unshift(arrContentScriptClient);
-    } else if (BACKGROUND_CHUNK === entryName) {
-        baseConfig.entry[entryName].unshift(hmrClient);
-        baseConfig.entry[entryName].unshift(arrBackgroundClient);
-    } else {
-        baseConfig.entry[entryName].unshift(reactHotLoader);
-        baseConfig.entry[entryName].unshift(hmrClient);
-    }
+  if (CONTENT_SCRIPT_CHUNKS.includes(entryName)) {
+    baseConfig.entry[entryName].unshift(arrContentScriptClient);
+  } else if (BACKGROUND_CHUNK === entryName) {
+    baseConfig.entry[entryName].unshift(hmrClient);
+    baseConfig.entry[entryName].unshift(arrBackgroundClient);
+  } else {
+    baseConfig.entry[entryName].unshift(reactHotLoader);
+    baseConfig.entry[entryName].unshift(hmrClient);
+  }
 }
 
 module.exports = merge(baseConfig, {
-    mode: "development",
-    devtool: "eval-cheap-module-source-map",
-    stats: "none",
-    plugins: [
-        new HotModuleReplacementPlugin(),
-    ],
+  mode: "development",
+  devtool: "eval-cheap-module-source-map",
+  stats: "none",
+  plugins: [
+    new HotModuleReplacementPlugin(),
+  ],
 });
