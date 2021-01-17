@@ -1,12 +1,12 @@
 import React from "react";
-import { Avatar, List, Tabs } from "antd";
-import { v4 as uuidv4 } from "uuid";
-import { Scrollbar } from "react-scrollbars-custom";
+import {Avatar, List, Tabs} from "antd";
+import {v4 as uuidv4} from "uuid";
+import {Scrollbar} from "react-scrollbars-custom";
 
 import "antd/dist/antd.less";
 import "../../css/workspace.less";
 
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 class Workspace extends React.Component {
   constructor(props) {
@@ -311,7 +311,7 @@ class Workspace extends React.Component {
       targetWorkspaceIndex > 0
         ? targetWorkspaceIndex - 1
         : targetWorkspaceIndex + 1
-    ].id;
+      ].id;
     this.setState({
       workspaces: this.state.workspaces.filter(
         (workspace) => workspace.id !== targetWorkspaceId
@@ -386,7 +386,7 @@ class Workspace extends React.Component {
           });
         }
         historyDomains = Object.values(historyDomains);
-        this.setState({ historyDomains });
+        this.setState({historyDomains});
       }
     );
 
@@ -446,7 +446,7 @@ class Workspace extends React.Component {
                 </>
               }
             >
-              <Scrollbar noScrollX={true} style={{ minHeight: "100%" }}>
+              <Scrollbar noScrollX={true} style={{minHeight: "100%"}}>
                 <List itemLayout="horizontal">
                   {workspace.entries.map((entry, index) => (
                     <List.Item
@@ -482,4 +482,4 @@ class Workspace extends React.Component {
   }
 }
 
-export { Workspace };
+export {Workspace};

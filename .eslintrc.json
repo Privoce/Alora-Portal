@@ -16,7 +16,10 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier"],
+  "plugins": [
+    "react",
+    "prettier"
+  ],
   "rules": {
     "import/prefer-default-export": "off",
     "prettier/prettier": "error",

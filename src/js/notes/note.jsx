@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import RichEditor from "rich-markdown-editor";
-import { v1 } from "uuid";
-import { Button, Input, Modal } from "antd";
+import {v1} from "uuid";
+import {Button, Input, Modal} from "antd";
 import debounce from "lodash.debounce";
-import {
-  resetLastEditorId,
-  restore,
-  save,
-  setLastEditorId,
-  update,
-} from "./storage";
-import { NotesManager } from "./noteManager";
+import {resetLastEditorId, restore, save, setLastEditorId, update,} from "./storage";
+import {NotesManager} from "./noteManager";
 import "../../css/note.less";
 import addIcon from "../../assets/add.png";
 
@@ -18,14 +12,14 @@ class PreviewBlock extends React.Component {
   changeHandler = debounce((value) => {
     const content = value();
     save(
-      { data: content, date: Date.now(), title: this.state.title },
+      {data: content, date: Date.now(), title: this.state.title},
       this.props.id
     );
   }, 500);
 
   constructor(props) {
     super(props);
-    this.state = { text: "", date: "", title: "", visible: false };
+    this.state = {text: "", date: "", title: "", visible: false};
   }
 
   componentDidMount() {
@@ -63,14 +57,14 @@ class PreviewBlock extends React.Component {
       const tempTitle = this.state.title
         ? this.state.title
         : it[this.props.id].data.substr(0, 6);
-      this.setState({ visible: false, title: tempTitle });
-      update({ title: tempTitle }, this.props.id);
+      this.setState({visible: false, title: tempTitle});
+      update({title: tempTitle}, this.props.id);
     });
   };
 
   handleDelete = () => {
     this.props.handleDelete(this.props.id);
-    this.setState({ visible: false });
+    this.setState({visible: false});
   };
 
   render() {
@@ -80,7 +74,7 @@ class PreviewBlock extends React.Component {
           title={
             <Input
               placeholder="Put title here"
-              onChange={(e) => this.setState({ title: e.target.value })}
+              onChange={(e) => this.setState({title: e.target.value})}
               defaultValue={this.state.title}
             />
           }
@@ -169,7 +163,7 @@ export function Notes() {
         }}
       >
         <img
-          style={{ cursor: "pointer" }}
+          style={{cursor: "pointer"}}
           onClick={handleAdd}
           src={addIcon}
           className="note--image-hover"
@@ -184,7 +178,7 @@ export function Notes() {
       )}
       {notes.map((note) => {
         return (
-          <PreviewBlock id={note} handleDelete={handleDelete} setId={setId} />
+          <PreviewBlock id={note} handleDelete={handleDelete} setId={setId}/>
         );
       })}
     </div>

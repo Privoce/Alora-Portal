@@ -1,25 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { observer } from 'mobx-react';
-import { Col, Row } from 'antd';
+import {observer} from 'mobx-react';
+import {Col, Row} from 'antd';
 import socketIOClient from 'socket.io-client';
+import ReactGA from 'react-ga';
 
-import { Launcher } from './launcher/launcher';
-import { Workspace } from './workspace/workspace';
-import { Notes } from './notes/note';
+import {Launcher} from './launcher/launcher';
+import {Workspace} from './workspace/workspace';
+import {Notes} from './notes/note';
 
 import 'antd/dist/antd.less';
 import '../css/portal.less';
-
-import calendarImg from '../assets/calendar.png';
-import workspaceImg from '../assets/workspace.png';
 import gpsIcon from '../assets/gps-icon.png';
 import sunIcon from '../assets/sun-icon.png';
-import noteIcon from '../assets/notes.png';
-import loadingGif from '../assets/loading.gif';
-import { Calendar } from './calendar/calendar';
+import {Calendar} from './calendar/calendar';
 
-import { OPEN_WEATHER_API_KEY, BACKEND_URL } from './misc/variables';
+import {BACKEND_URL, OPEN_WEATHER_API_KEY} from './misc/variables';
+
+ReactGA.initialize('259052139');
+
 @observer
 class App extends React.Component {
   constructor(props) {
@@ -62,7 +61,7 @@ class App extends React.Component {
   };
 
   async getEventsFromServer() {
-    const { user } = this.state;
+    const {user} = this.state;
 
     // if dont have google account connected
     if (!user.googleConnect || user.token == '') {
@@ -224,7 +223,42 @@ class App extends React.Component {
     });
   };
 
+  onLauncherInteract = () => {
+    console.log('launcher interact');
+    ReactGA.event({
+      category: 'Widget Interaction',
+      action: 'Launcher'
+    });
+  };
+
+  onCalendarInteract = () => {
+    console.log('calendar interact');
+    ReactGA.event({
+      category: 'Widget Interaction',
+      action: 'Calendar'
+    });
+  };
+
+  onNoteInteract = () => {
+    console.log('note interact');
+    ReactGA.event({
+      category: 'Widget Interaction',
+      action: 'Note'
+    });
+  };
+
+  onWorkspaceInteract = () => {
+    console.log('workspace interact');
+    ReactGA.event({
+      category: 'Widget Interaction',
+      action: 'Workspace'
+    });
+  };
+
   componentDidMount() {
+    ReactGA.pageview('/portal.html');
+    console.log('send ga pageview');
+
     this.socket = socketIOClient(BACKEND_URL);
 
     const googleConected = localStorage.getItem('googleConnect');
@@ -233,7 +267,7 @@ class App extends React.Component {
     const token = localStorage.getItem('token');
 
     if (googleConected === 'true') {
-      this.socket.emit('storeClientInfo', { nickname, _id: userId });
+      this.socket.emit('storeClientInfo', {nickname, _id: userId});
     }
 
     this.socket.on('new-event', data => {
@@ -267,7 +301,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { location, user, hour, eventLoading } = this.state;
+    const {location, user, hour, eventLoading} = this.state;
     return (
       <Row className="container--portal">
         <Col span={6}>
@@ -279,14 +313,14 @@ class App extends React.Component {
               : 'User'}
           </h1>
           <p className="home--weather">
-            <img src={sunIcon} width={20} height={20} /> {location.temp}° C
+            <img src={sunIcon} width={20} height={20}/> {location.temp}° C
           </p>
           <p className="home--location">
-            <img src={gpsIcon} width={17} height={17} /> {location.city},{' '}
+            <img src={gpsIcon} width={17} height={17}/> {location.city},{' '}
             {location.region}
           </p>
-          <div className="home--history">
-            <Launcher />
+          <div className="home--history" onClick={this.onLauncherInteract} onContextMenu={this.onLauncherInteract}>
+            <Launcher/>
           </div>
         </Col>
 
@@ -299,7 +333,7 @@ class App extends React.Component {
           {/*  <h2 className="home--calendar">Calendar</h2>*/}
           {/*</div>*/}
           <div className="site-calendar-demo-card">
-            <div className="calendar">
+            <div className="calendar" onClick={this.onCalendarInteract} onContextMenu={this.onCalendarInteract}>
               <Calendar
                 onLogin={this.loginHandle}
                 user={user}
@@ -314,8 +348,8 @@ class App extends React.Component {
             {/*  <h2 className="home--calendar">Notes</h2>*/}
             {/*</div>*/}
             <div className="site-calendar-demo-card">
-              <div className="notes">
-                <Notes />
+              <div className="notes" onClick={this.onNoteInteract} onContextMenu={this.onNoteInteract}>
+                <Notes/>
               </div>
             </div>
           </div>
@@ -326,8 +360,8 @@ class App extends React.Component {
           {/*  <img src={workspaceImg} alt="" />*/}
           {/*  <h2 className="home--workspace">Workspace</h2>*/}
           {/*</div>*/}
-          <div className="workspace">
-            <Workspace />
+          <div className="workspace" onClick={this.onWorkspaceInteract} onContextMenu={this.onWorkspaceInteract}>
+            <Workspace/>
           </div>
         </Col>
       </Row>
@@ -335,4 +369,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
