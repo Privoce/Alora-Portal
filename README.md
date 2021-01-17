@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💻 Papo Portal
+# 💻 Portal
 
 ![](preview.png)
 
@@ -8,7 +8,7 @@
 
 ## 📖 About
 
-- Papo Papo is a tool for managing tabs and internet content. Now you can easily navigate between workspaces and your favorite sites. Use Chat as your home page, and have access to your appointments and notes in a simple and uncomplicated way. Take control of your navigation with Papo Portal
+- Portal is a tool for managing tabs and internet content. Now you can easily navigate between workspaces and your favorite sites. Use Chat as your home page, and have access to your appointments and notes in a simple and uncomplicated way. Take control of your navigation with Portal
 
 ## :white_check_mark: How to Install
 
