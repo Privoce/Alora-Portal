@@ -17,7 +17,9 @@ import {Calendar} from './calendar/calendar';
 
 import {BACKEND_URL, OPEN_WEATHER_API_KEY} from './misc/variables';
 
-ReactGA.initialize('259052139');
+ReactGA.initialize('UA-110173205-3');
+ReactGA.set({checkProtocolTask: null});
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 @observer
 class App extends React.Component {
@@ -224,7 +226,6 @@ class App extends React.Component {
   };
 
   onLauncherInteract = () => {
-    console.log('launcher interact');
     ReactGA.event({
       category: 'Widget Interaction',
       action: 'Launcher'
@@ -232,7 +233,6 @@ class App extends React.Component {
   };
 
   onCalendarInteract = () => {
-    console.log('calendar interact');
     ReactGA.event({
       category: 'Widget Interaction',
       action: 'Calendar'
@@ -240,7 +240,6 @@ class App extends React.Component {
   };
 
   onNoteInteract = () => {
-    console.log('note interact');
     ReactGA.event({
       category: 'Widget Interaction',
       action: 'Note'
@@ -248,7 +247,6 @@ class App extends React.Component {
   };
 
   onWorkspaceInteract = () => {
-    console.log('workspace interact');
     ReactGA.event({
       category: 'Widget Interaction',
       action: 'Workspace'
@@ -257,7 +255,6 @@ class App extends React.Component {
 
   componentDidMount() {
     ReactGA.pageview('/portal.html');
-    console.log('send ga pageview');
 
     this.socket = socketIOClient(BACKEND_URL);
 

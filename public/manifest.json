@@ -8,9 +8,9 @@
     "storage",
     "history",
     "chrome://favicon/",
-    "https://*/"
+    "*://*/"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com/; object-src 'self'; img-src chrome://favicon;",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com/; object-src 'self'; img-src chrome://favicon/ http://www.google-analytics.com/;",
   "background": {
     "scripts": [
       "background.bundle.js"
