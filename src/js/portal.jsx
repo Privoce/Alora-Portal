@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import {observer} from 'mobx-react';
 import {Col, Row} from 'antd';
@@ -17,12 +17,15 @@ import {Calendar} from './calendar/calendar';
 
 import {BACKEND_URL, OPEN_WEATHER_API_KEY} from './misc/variables';
 
+import { withTranslation } from 'react-i18next';
+import "./../../public/locales/i18n";
+
 ReactGA.initialize('UA-110173205-3');
 ReactGA.set({checkProtocolTask: null});
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 @observer
-class App extends React.Component {
+class Portal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -299,15 +302,18 @@ class App extends React.Component {
 
   render() {
     const {location, user, hour, eventLoading} = this.state;
+    const { t } = this.props;
     return (
       <Row className="container--portal">
         <Col span={6}>
           <h1 className="home--clock">{hour}</h1>
           <h1 className="home--username">
-            Welcome{' '}
+            {
+              t('WELCOME')
+            }
             {user.name
               ? `${user.name.charAt(0).toUpperCase()}${user.name.slice(1)}`
-              : 'User'}
+              : ''}
           </h1>
           <p className="home--weather">
             <img src={sunIcon} width={20} height={20}/> {location.temp}° C
@@ -364,6 +370,16 @@ class App extends React.Component {
       </Row>
     );
   }
+}
+
+const MyComponent = withTranslation()(Portal)
+
+export default function App() {
+  return (
+    <Suspense fallback="loading">
+      <MyComponent />
+    </Suspense>
+  );
 }
 
 ReactDOM.render(<App/>, document.getElementById('root'));

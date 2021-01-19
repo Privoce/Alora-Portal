@@ -8,6 +8,9 @@ import {NotesManager} from "./noteManager";
 import "../../css/note.less";
 import addIcon from "../../assets/add.png";
 
+import { useTranslation } from 'react-i18next';
+import "./../../../public/locales/i18n";
+
 class PreviewBlock extends React.Component {
   changeHandler = debounce((value) => {
     const content = value();
@@ -86,10 +89,10 @@ class PreviewBlock extends React.Component {
           onOk={this.handleModalOk}
           footer={[
             <Button key="save" type="primary" onClick={this.handleModalOk}>
-              save
+              <Save/>
             </Button>,
             <Button key="delete" danger onClick={this.handleDelete}>
-              delete
+              <Delete/>
             </Button>,
           ]}
         >
@@ -108,7 +111,9 @@ class PreviewBlock extends React.Component {
         <div className="note-preview-block" onClick={this.handleClick}>
           <span className="title">
             {" "}
-            {this.state.title ? this.state.title : "Click me to edit"}{" "}
+            {this.state.title ? this.state.title : (
+              <ClickToEdit/>
+            )}{" "}
           </span>
           <span className="date"> {this.convertDate()} </span>
         </div>
@@ -172,7 +177,7 @@ export function Notes() {
       {notes.length == 0 && (
         <div className="no-notes">
           <p>
-            Press the <span>+</span> to add a note!
+            <PressToAdd/>
           </p>
         </div>
       )}
@@ -183,4 +188,29 @@ export function Notes() {
       })}
     </div>
   );
+}
+
+function PressToAdd() {
+  const { t } = useTranslation();
+  return <>{t('PRESS_TO_ADD_NOTE')}</>;
+}
+
+function Save() {
+  const { t } = useTranslation();
+  return <>{t('SAVE')}</>;
+}
+
+function Delete() {
+  const { t } = useTranslation();
+  return <>{t('DELETE')}</>;
+}
+
+function ClickToEdit() {
+  const { t } = useTranslation();
+  return <>{t('CLICK_ME_TO_EDIT')}</>;
+}
+
+function PutTitleHere() {
+  const { t } = useTranslation();
+  return <>{t('PUT_TITLE_HERE')}</>;
 }

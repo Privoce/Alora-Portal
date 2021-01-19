@@ -10,6 +10,9 @@ import {App, LauncherManager} from "./launcherManager";
 import "antd/dist/antd.less";
 import Style from "../../css/launcher.module.less";
 
+import { useTranslation } from 'react-i18next';
+import "./../../../public/locales/i18n";
+
 const {Option} = Select;
 
 const preventImgDrag = (event: React.DragEvent<HTMLImageElement>) =>
@@ -172,7 +175,7 @@ class DeleteConfirmModal extends React.Component<{}, {}> {
         onCancel={this.handleCancel}
         footer={[
           <Button key="cancel" onClick={this.handleCancel}>
-            No
+            <No/>
           </Button>,
           <Button
             className={Style.fixLoadingBtn}
@@ -181,11 +184,11 @@ class DeleteConfirmModal extends React.Component<{}, {}> {
             loading={this.modalState.loading}
             onClick={this.handleOk}
           >
-            Yes
+            <Yes/>
           </Button>,
         ]}
       >
-        <p>Do you confirm to delete {this.modalState.origin}?</p>
+        <p><ConfirmDeletion/> {this.modalState.origin}?</p>
       </Modal>
     );
   }
@@ -334,6 +337,21 @@ export class Launcher extends React.Component<{}, {}> {
       </Scrollbar>
     );
   }
+}
+
+function Yes() {
+  const { t } = useTranslation();
+  return <>{t('YES')}</>;
+}
+
+function No() {
+  const { t } = useTranslation();
+  return <>{t('NO')}</>;
+}
+
+function ConfirmDeletion() {
+  const { t } = useTranslation();
+  return <>{t('CONFIRM_DELETION')}</>
 }
 
 const appList: IObservableArray<App> = observable([]);
