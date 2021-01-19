@@ -1,5 +1,5 @@
 export const TRANSLATIONS_PT = {
-  WELCOME: 'Bem vinde ',
+  WELCOME: 'Olá ',
   TODAY: 'Hoje',
   ADD_APP: 'Adicionar um site',
   MANUALLY_ADD_APP: 'Adicionar um site manualmente',
@@ -26,4 +26,7 @@ export const TRANSLATIONS_PT = {
   NO: 'Não',
   CONFIRM_DELETION: 'Quer com certeza deletar',
   ALL_DAY: 'Dia todo',
+  DELETE_APP: 'Deletar aplicativo',
+  NOTES_TITLE: 'Coloque um titulo',
+  NOTES_BODY: 'Escreva algo incrível aqui',
 };

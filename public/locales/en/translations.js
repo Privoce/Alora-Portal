@@ -26,4 +26,7 @@ export const TRANSLATIONS_EN = {
   NO: 'No',
   CONFIRM_DELETION: 'Do you confirm to delete',
   ALL_DAY: 'All day',
+  DELETE_APP: 'Delete application',
+  NOTES_TITLE: 'Put a title here',
+  NOTES_BODY: 'Write something nice',
 };

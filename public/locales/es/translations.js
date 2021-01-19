@@ -1,5 +1,5 @@
 export const TRANSLATIONS_ES = {
-  WELCOME: 'Bienvenido ',
+  WELCOME: 'Hola ',
   TODAY: 'Hoy',
   ADD_APP: 'Agregar aplicación',
   MANUALLY_ADD_APP: 'Agregar aplicación manualmente',
@@ -26,4 +26,7 @@ export const TRANSLATIONS_ES = {
   NO: 'No',
   CONFIRM_DELETION: '¿Confirmas eliminar',
   ALL_DAY: 'Todo el día',
+  DELETE_APP: 'Eliminar Aplicación',
+  NOTES_TITLE: 'Poner un título aquí',
+  NOTES_BODY: 'Escribe algo chido',
 };
