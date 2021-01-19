@@ -1,16 +1,19 @@
-import React from "react";
-import {Avatar, Button, Input, List, Modal, Popover, Select} from "antd";
-import {CloseOutlined} from "@ant-design/icons";
-import {IObservableArray, observable, runInAction} from "mobx";
-import {observer} from "mobx-react";
-import {v4 as uuidv4} from "uuid";
-import Scrollbar from "react-scrollbars-custom";
-import {createTab, HistoryEntry} from "./utils";
-import {App, LauncherManager} from "./launcherManager";
-import "antd/dist/antd.less";
-import Style from "../../css/launcher.module.less";
+import React from 'react';
+import { Avatar, Button, Input, List, Modal, Popover, Select } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { IObservableArray, observable, runInAction } from 'mobx';
+import { observer } from 'mobx-react';
+import { v4 as uuidv4 } from 'uuid';
+import Scrollbar from 'react-scrollbars-custom';
+import { createTab, HistoryEntry } from './utils';
+import { App, LauncherManager } from './launcherManager';
+import 'antd/dist/antd.less';
+import Style from '../../css/launcher.module.less';
 
-const {Option} = Select;
+import { useTranslation } from 'react-i18next';
+import './../../../public/locales/i18n';
+
+const { Option } = Select;
 
 const preventImgDrag = (event: React.DragEvent<HTMLImageElement>) =>
   event.preventDefault();
@@ -22,19 +25,19 @@ class Detail extends React.Component<{ app: App }, {}> {
       <div className={Style.detailList}>
         <Scrollbar
           noScrollX={true}
-          style={{height: "100%", width: "100%"}}
+          style={{ height: '100%', width: '100%' }}
           className={Style.fixScrollbar}
         >
           <List
             itemLayout="horizontal"
             dataSource={this.props.app.historyEntries}
             renderItem={(
-              historyEntry: HistoryEntry & { faviconHref: string }
+              historyEntry: HistoryEntry & { faviconHref: string },
             ) => (
               <List.Item>
                 <List.Item.Meta
                   avatar={
-                    <Avatar src={historyEntry.faviconHref} shape="square"/>
+                    <Avatar src={historyEntry.faviconHref} shape="square" />
                   }
                   title={
                     <a
@@ -57,7 +60,10 @@ class Detail extends React.Component<{ app: App }, {}> {
 }
 
 @observer
-class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
+class Icon extends React.Component<
+  { app: App; onDelete: () => void; translation: any },
+  {}
+> {
   iconState: {
     isPopoverVisible: boolean;
   } = observable({
@@ -70,7 +76,7 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
   };
 
   handleRightClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): void => {
     runInAction(() => {
       this.iconState.isPopoverVisible = !this.iconState.isPopoverVisible;
@@ -89,13 +95,14 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
   };
 
   render() {
+    const { translation } = this.props;
     return (
       <div className={Style.icon}>
         <Popover
           placement="right"
           arrowPointAtCenter
-          title={`History on ${this.props.app.origin}`}
-          content={<Detail app={this.props.app}/>}
+          title={`${translation('HISTORY_ON')} ${this.props.app.origin}`}
+          content={<Detail app={this.props.app} />}
           visible={this.iconState.isPopoverVisible}
           trigger="click"
           onVisibleChange={this.handleVisibleChange}
@@ -109,7 +116,7 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
           />
         </Popover>
         <div className={Style.closeBtn} onClick={this.handleClose}>
-          <CloseOutlined/>
+          <CloseOutlined />
         </div>
       </div>
     );
@@ -117,7 +124,7 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
 }
 
 @observer
-class DeleteConfirmModal extends React.Component<{}, {}> {
+class DeleteConfirmModal extends React.Component<{ translation: any }, {}> {
   modalState: {
     visible: boolean;
     loading: boolean;
@@ -125,13 +132,13 @@ class DeleteConfirmModal extends React.Component<{}, {}> {
   } = observable({
     visible: false,
     loading: false,
-    origin: "",
+    origin: '',
   });
 
   resetState = (): void => {
     runInAction(() => {
       this.modalState.loading = false;
-      this.modalState.origin = "";
+      this.modalState.origin = '';
       this.modalState.visible = false;
     });
   };
@@ -164,15 +171,17 @@ class DeleteConfirmModal extends React.Component<{}, {}> {
   };
 
   render() {
+    const { translation } = this.props;
+
     return (
       <Modal
-        title="Delete App"
+        title={translation('DELETE_APP')}
         visible={this.modalState.visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={[
           <Button key="cancel" onClick={this.handleCancel}>
-            No
+            <No />
           </Button>,
           <Button
             className={Style.fixLoadingBtn}
@@ -181,11 +190,13 @@ class DeleteConfirmModal extends React.Component<{}, {}> {
             loading={this.modalState.loading}
             onClick={this.handleOk}
           >
-            Yes
+            <Yes />
           </Button>,
         ]}
       >
-        <p>Do you confirm to delete {this.modalState.origin}?</p>
+        <p>
+          <ConfirmDeletion /> {this.modalState.origin}?
+        </p>
       </Modal>
     );
   }
@@ -201,16 +212,16 @@ class AddInputModal extends React.Component<{}, {}> {
   } = observable({
     visible: false,
     loading: false,
-    selectVal: "http://",
-    inputVal: "",
+    selectVal: 'http://',
+    inputVal: '',
   });
 
   resetState = (): void => {
     runInAction(() => {
       this.modalState.visible = false;
       this.modalState.loading = false;
-      this.modalState.selectVal = "http://";
-      this.modalState.inputVal = "";
+      this.modalState.selectVal = 'http://';
+      this.modalState.inputVal = '';
     });
   };
 
@@ -231,7 +242,7 @@ class AddInputModal extends React.Component<{}, {}> {
 
   handleAdd = async (): Promise<void> => {
     await LauncherManager.addApp(
-      `${this.modalState.selectVal}${this.modalState.inputVal}`
+      `${this.modalState.selectVal}${this.modalState.inputVal}`,
     );
     reloadAppList().then();
   };
@@ -269,7 +280,7 @@ class AddInputModal extends React.Component<{}, {}> {
           addonBefore={
             <Select
               value={this.modalState.selectVal}
-              onChange={(value) => {
+              onChange={value => {
                 runInAction(() => {
                   this.modalState.selectVal = value;
                 });
@@ -283,7 +294,7 @@ class AddInputModal extends React.Component<{}, {}> {
           }
           placeholder="www.custom-site.com"
           value={this.modalState.inputVal}
-          onChange={(event) => {
+          onChange={event => {
             runInAction(() => {
               this.modalState.inputVal = event.target.value;
             });
@@ -295,7 +306,7 @@ class AddInputModal extends React.Component<{}, {}> {
 }
 
 @observer
-export class Launcher extends React.Component<{}, {}> {
+export class Launcher extends React.Component<{ translation: any }, {}> {
   deleteConfirmModal: React.RefObject<DeleteConfirmModal> = React.createRef();
   addInputModal: React.RefObject<AddInputModal> = React.createRef();
 
@@ -304,10 +315,11 @@ export class Launcher extends React.Component<{}, {}> {
   }
 
   render() {
+    const { translation } = this.props;
     return (
       <Scrollbar
         noScrollX={true}
-        style={{height: "100%", width: "100%"}}
+        style={{ height: '100%', width: '100%' }}
         className={Style.fixScrollbar}
       >
         <div className={Style.container}>
@@ -315,6 +327,7 @@ export class Launcher extends React.Component<{}, {}> {
             <Icon
               key={uuidv4()}
               app={app}
+              translation={translation}
               onDelete={() => {
                 this.deleteConfirmModal.current.showModal(app.origin);
               }}
@@ -328,12 +341,30 @@ export class Launcher extends React.Component<{}, {}> {
           >
             <div className={Style.addBtn}>+</div>
           </div>
-          <DeleteConfirmModal ref={this.deleteConfirmModal}/>
-          <AddInputModal ref={this.addInputModal}/>
+          <DeleteConfirmModal
+            ref={this.deleteConfirmModal}
+            translation={translation}
+          />
+          <AddInputModal ref={this.addInputModal} />
         </div>
       </Scrollbar>
     );
   }
+}
+
+function Yes() {
+  const { t } = useTranslation();
+  return <>{t('YES')}</>;
+}
+
+function No() {
+  const { t } = useTranslation();
+  return <>{t('NO')}</>;
+}
+
+function ConfirmDeletion() {
+  const { t } = useTranslation();
+  return <>{t('CONFIRM_DELETION')}</>;
 }
 
 const appList: IObservableArray<App> = observable([]);

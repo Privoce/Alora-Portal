@@ -1,10 +1,20 @@
-import React from "react";
-import {Button, Row} from "antd";
-import {addDays, addMinutes, format, isSameDay, isTomorrow, subDays,} from "date-fns";
-import {FaExternalLinkAlt, FaGoogle} from "react-icons/fa";
-import {BsChevronLeft, BsChevronRight} from "react-icons/bs";
-import loadingGif from "../../assets/loading.gif";
-import "../../css/calendar.less";
+import React from 'react';
+import { Button, Row } from 'antd';
+import {
+  addDays,
+  addMinutes,
+  format,
+  isSameDay,
+  isTomorrow,
+  subDays,
+} from 'date-fns';
+import { FaExternalLinkAlt, FaGoogle } from 'react-icons/fa';
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import loadingGif from '../../assets/loading.gif';
+import '../../css/calendar.less';
+
+import { useTranslation } from 'react-i18next';
+import "./../../../public/locales/i18n";
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -23,8 +33,8 @@ class Calendar extends React.Component {
   }
 
   checkEvents(date) {
-    const check = this.props.user.events.find((evento) =>
-      isSameDay(evento.start, date)
+    const check = this.props.user.events.find(evento =>
+      isSameDay(evento.start, date),
     );
 
     this.setState({
@@ -77,35 +87,37 @@ class Calendar extends React.Component {
       return isSameDay(date.start, date2);
     };
 
-    const isOngoingEvent = (date) => {
+    const isOngoingEvent = date => {
       let currentTime = new Date();
       if (date.allDay && isSameDay(date.end, currentTime)) return true;
       return date.start < currentTime && date.end > currentTime;
     };
+
+    const { t } = this.props;
 
     return (
       <div className="calendar--container">
         <div className="calendar-footer--container">
           <Row className="header-left">
             <Button className="arrow--btn" onClick={this.prevDay}>
-              <BsChevronLeft/>
+              <BsChevronLeft />
             </Button>
             <Button className="arrow--btn" onClick={this.nextDay}>
-              <BsChevronRight/>
+              <BsChevronRight />
             </Button>
             <div className="header-date">
-              <p>{format(this.state.currentDate, "dd MMMM, yyyy")}</p>
+              <p>{format(this.state.currentDate, 'dd MMMM, yyyy')}</p>
             </div>
           </Row>
           <div>
             <button
               className={`calendar--card-today ${
-                !isSameDay(this.state.currentDate, new Date()) && "not-today"
+                !isSameDay(this.state.currentDate, new Date()) && 'not-today'
               }`}
               style={this.state.buttonStyle}
               onClick={this.currentDay}
             >
-              Today
+              <Today/>
             </button>
           </div>
         </div>
@@ -113,45 +125,45 @@ class Calendar extends React.Component {
         {this.props.user.googleConnect ? (
           <div className="events--container">
             {this.props.user.events.map(
-              (item) =>
+              item =>
                 isTheSameDay(item, this.state.currentDate) && (
                   <div
                     className={
                       isOngoingEvent(item)
-                        ? "event--card ongoing-event"
-                        : "event--card"
+                        ? 'event--card ongoing-event'
+                        : 'event--card'
                     }
                   >
                     <p>{`${item.title[0].toUpperCase()}${item.title.slice(
-                      1
+                      1,
                     )}`}</p>
                     {item.allDay ? (
-                      <p>All day</p>
+                      <p><AllDay/></p>
                     ) : (
                       <p>
-                        {format(item.start, "HH:mm")} -{" "}
-                        {format(item.end, "HH:mm")}
+                        {format(item.start, 'HH:mm')} -{' '}
+                        {format(item.end, 'HH:mm')}
                       </p>
                     )}
                   </div>
-                )
+                ),
             )}
             {this.props.eventLoading ? (
               <center>
-                <img src={loadingGif} className="calendar--image-load"/>
+                <img src={loadingGif} className="calendar--image-load" />
               </center>
             ) : this.props.user.events.length === 0 ||
-            !this.state.todayEvents ? (
-              <p className="event--no-event">No upcoming events</p>
+              !this.state.todayEvents ? (
+                <p className="event--no-event"><NoUpcomingEvents/></p>
             ) : null}
           </div>
         ) : (
           <>
-            <div className="sign-in-label">Sign in to preview your agenda</div>
+          <div className="sign-in-label"><SigninToPreview/></div>
             <div className="social-auth--container">
               <button onClick={this.props.onLogin}>
-                <FaGoogle/>
-                Sign in with Google
+                <FaGoogle />
+                <SigninWithGoogle/>
               </button>
             </div>
           </>
@@ -162,7 +174,7 @@ class Calendar extends React.Component {
             href="https://calendar.google.com/calendar/u/0/r"
             target="_blank"
           >
-            <FaExternalLinkAlt/>
+            <FaExternalLinkAlt />
           </a>
         </div>
       </div>
@@ -170,4 +182,29 @@ class Calendar extends React.Component {
   }
 }
 
-export {Calendar};
+function AllDay() {
+  const { t } = useTranslation();
+  return <>{t('ALL_DAY')}</>;
+}
+
+function SigninToPreview() {
+  const { t } = useTranslation();
+  return <>{t('SIGNIN_TO_PREVIEW')}</>;
+}
+
+function SigninWithGoogle() {
+  const { t } = useTranslation();
+  return <>{t('SIGNIN_WITH_GOOGLE')}</>;
+}
+
+function NoUpcomingEvents() {
+  const { t } = useTranslation();
+  return <>{t('NO_UPCOMING_EVENTS')}</>;
+}
+
+function Today() {
+  const { t } = useTranslation();
+  return <>{t('TODAY')}</>;
+}
+
+export { Calendar };

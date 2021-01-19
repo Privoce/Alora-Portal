@@ -99,5 +99,11 @@
     "webpack-merge": "^5.1.1",
     "webpackbar": "^4.0.0",
     "yargs": "^15.4.1"
+  },
+  "dependencies": {
+    "i18next": "^19.8.4",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-http-backend": "^1.0.22",
+    "react-i18next": "^11.8.5"
   }
 }

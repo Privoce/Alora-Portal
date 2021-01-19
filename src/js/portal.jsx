@@ -1,28 +1,31 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import {observer} from 'mobx-react';
-import {Col, Row} from 'antd';
+import { observer } from 'mobx-react';
+import { Col, Row } from 'antd';
 import socketIOClient from 'socket.io-client';
 import ReactGA from 'react-ga';
 
-import {Launcher} from './launcher/launcher';
-import {Workspace} from './workspace/workspace';
-import {Notes} from './notes/note';
+import { Launcher } from './launcher/launcher';
+import { Workspace } from './workspace/workspace';
+import { Notes } from './notes/note';
 
 import 'antd/dist/antd.less';
 import '../css/portal.less';
 import gpsIcon from '../assets/gps-icon.png';
 import sunIcon from '../assets/sun-icon.png';
-import {Calendar} from './calendar/calendar';
+import { Calendar } from './calendar/calendar';
 
-import {BACKEND_URL, OPEN_WEATHER_API_KEY} from './misc/variables';
+import { BACKEND_URL, OPEN_WEATHER_API_KEY } from './misc/variables';
+
+import { withTranslation } from 'react-i18next';
+import './../../public/locales/i18n';
 
 ReactGA.initialize('UA-110173205-3');
-ReactGA.set({checkProtocolTask: null});
+ReactGA.set({ checkProtocolTask: null });
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 @observer
-class App extends React.Component {
+class Portal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,7 +66,7 @@ class App extends React.Component {
   };
 
   async getEventsFromServer() {
-    const {user} = this.state;
+    const { user } = this.state;
 
     // if dont have google account connected
     if (!user.googleConnect || user.token == '') {
@@ -228,28 +231,28 @@ class App extends React.Component {
   onLauncherInteract = () => {
     ReactGA.event({
       category: 'Widget Interaction',
-      action: 'Launcher'
+      action: 'Launcher',
     });
   };
 
   onCalendarInteract = () => {
     ReactGA.event({
       category: 'Widget Interaction',
-      action: 'Calendar'
+      action: 'Calendar',
     });
   };
 
   onNoteInteract = () => {
     ReactGA.event({
       category: 'Widget Interaction',
-      action: 'Note'
+      action: 'Note',
     });
   };
 
   onWorkspaceInteract = () => {
     ReactGA.event({
       category: 'Widget Interaction',
-      action: 'Workspace'
+      action: 'Workspace',
     });
   };
 
@@ -264,7 +267,7 @@ class App extends React.Component {
     const token = localStorage.getItem('token');
 
     if (googleConected === 'true') {
-      this.socket.emit('storeClientInfo', {nickname, _id: userId});
+      this.socket.emit('storeClientInfo', { nickname, _id: userId });
     }
 
     this.socket.on('new-event', data => {
@@ -298,26 +301,31 @@ class App extends React.Component {
   }
 
   render() {
-    const {location, user, hour, eventLoading} = this.state;
+    const { location, user, hour, eventLoading } = this.state;
+    const { t } = this.props;
     return (
       <Row className="container--portal">
         <Col span={6}>
           <h1 className="home--clock">{hour}</h1>
           <h1 className="home--username">
-            Welcome{' '}
+            {t('WELCOME')}
             {user.name
               ? `${user.name.charAt(0).toUpperCase()}${user.name.slice(1)}`
-              : 'User'}
+              : ''}
           </h1>
           <p className="home--weather">
-            <img src={sunIcon} width={20} height={20}/> {location.temp}° C
+            <img src={sunIcon} width={20} height={20} /> {location.temp}° C
           </p>
           <p className="home--location">
-            <img src={gpsIcon} width={17} height={17}/> {location.city},{' '}
+            <img src={gpsIcon} width={17} height={17} /> {location.city},{' '}
             {location.region}
           </p>
-          <div className="home--history" onClick={this.onLauncherInteract} onContextMenu={this.onLauncherInteract}>
-            <Launcher/>
+          <div
+            className="home--history"
+            onClick={this.onLauncherInteract}
+            onContextMenu={this.onLauncherInteract}
+          >
+            <Launcher translation={t} />
           </div>
         </Col>
 
@@ -330,7 +338,11 @@ class App extends React.Component {
           {/*  <h2 className="home--calendar">Calendar</h2>*/}
           {/*</div>*/}
           <div className="site-calendar-demo-card">
-            <div className="calendar" onClick={this.onCalendarInteract} onContextMenu={this.onCalendarInteract}>
+            <div
+              className="calendar"
+              onClick={this.onCalendarInteract}
+              onContextMenu={this.onCalendarInteract}
+            >
               <Calendar
                 onLogin={this.loginHandle}
                 user={user}
@@ -345,8 +357,12 @@ class App extends React.Component {
             {/*  <h2 className="home--calendar">Notes</h2>*/}
             {/*</div>*/}
             <div className="site-calendar-demo-card">
-              <div className="notes" onClick={this.onNoteInteract} onContextMenu={this.onNoteInteract}>
-                <Notes/>
+              <div
+                className="notes"
+                onClick={this.onNoteInteract}
+                onContextMenu={this.onNoteInteract}
+              >
+                <Notes translate={t} />
               </div>
             </div>
           </div>
@@ -357,8 +373,12 @@ class App extends React.Component {
           {/*  <img src={workspaceImg} alt="" />*/}
           {/*  <h2 className="home--workspace">Workspace</h2>*/}
           {/*</div>*/}
-          <div className="workspace" onClick={this.onWorkspaceInteract} onContextMenu={this.onWorkspaceInteract}>
-            <Workspace/>
+          <div
+            className="workspace"
+            onClick={this.onWorkspaceInteract}
+            onContextMenu={this.onWorkspaceInteract}
+          >
+            <Workspace />
           </div>
         </Col>
       </Row>
@@ -366,4 +386,14 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+const MyComponent = withTranslation()(Portal);
+
+export default function App() {
+  return (
+    <Suspense fallback="loading">
+      <MyComponent />
+    </Suspense>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
