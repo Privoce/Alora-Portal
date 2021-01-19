@@ -86,7 +86,7 @@ class App extends React.Component {
     });
 
     if (response.status > 204) {
-      return alert('Session expired!');
+      // return alert('Session expired!');
     }
 
     const data = await response.json();
@@ -256,7 +256,8 @@ class App extends React.Component {
 
     // update clock every minute
     this.getHour();
-    this.timer = setInterval(() => {
+    setInterval(() => {
+      this.getLocationAndWeather();
       this.getHour();
     }, 40000);
   }
