@@ -1,15 +1,8 @@
 import React from "react";
-import { Row, Button } from "antd";
-import {
-  format,
-  addDays,
-  subDays,
-  isSameDay,
-  isTomorrow,
-  addMinutes,
-} from "date-fns";
-import { FaExternalLinkAlt, FaGoogle } from "react-icons/fa";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import {Button, Row} from "antd";
+import {addDays, addMinutes, format, isSameDay, isTomorrow, subDays,} from "date-fns";
+import {FaExternalLinkAlt, FaGoogle} from "react-icons/fa";
+import {BsChevronLeft, BsChevronRight} from "react-icons/bs";
 import loadingGif from "../../assets/loading.gif";
 import "../../css/calendar.less";
 
@@ -95,10 +88,10 @@ class Calendar extends React.Component {
         <div className="calendar-footer--container">
           <Row className="header-left">
             <Button className="arrow--btn" onClick={this.prevDay}>
-              <BsChevronLeft />
+              <BsChevronLeft/>
             </Button>
             <Button className="arrow--btn" onClick={this.nextDay}>
-              <BsChevronRight />
+              <BsChevronRight/>
             </Button>
             <div className="header-date">
               <p>{format(this.state.currentDate, "dd MMMM, yyyy")}</p>
@@ -145,10 +138,10 @@ class Calendar extends React.Component {
             )}
             {this.props.eventLoading ? (
               <center>
-                <img src={loadingGif} className="calendar--image-load" />
+                <img src={loadingGif} className="calendar--image-load"/>
               </center>
             ) : this.props.user.events.length === 0 ||
-              !this.state.todayEvents ? (
+            !this.state.todayEvents ? (
               <p className="event--no-event">No upcoming events</p>
             ) : null}
           </div>
@@ -157,7 +150,7 @@ class Calendar extends React.Component {
             <div className="sign-in-label">Sign in to preview your agenda</div>
             <div className="social-auth--container">
               <button onClick={this.props.onLogin}>
-                <FaGoogle />
+                <FaGoogle/>
                 Sign in with Google
               </button>
             </div>
@@ -169,7 +162,7 @@ class Calendar extends React.Component {
             href="https://calendar.google.com/calendar/u/0/r"
             target="_blank"
           >
-            <FaExternalLinkAlt />
+            <FaExternalLinkAlt/>
           </a>
         </div>
       </div>
@@ -177,4 +170,4 @@ class Calendar extends React.Component {
   }
 }
 
-export { Calendar };
+export {Calendar};

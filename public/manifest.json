@@ -1,18 +1,20 @@
 {
   "manifest_version": 2,
-  "name": "Alora Portal",
-  "version": "1.0.0",
-  "description": "",
+  "name": "Portal - My Personal Home Page",
+  "version": "1.0.2",
+  "description": "Google Calendar Preview, Notes, History, Bookmarks, Tab Management, Time, Weather, Quick Access.",
   "permissions": [
     "tabs",
     "storage",
     "history",
     "chrome://favicon/",
-    "https://*/"
+    "*://*/"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src chrome://favicon;",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com/; object-src 'self'; img-src chrome://favicon/ http://www.google-analytics.com/;",
   "background": {
-    "scripts": ["background.bundle.js"],
+    "scripts": [
+      "background.bundle.js"
+    ],
     "persistent": false
   },
   "browser_action": {

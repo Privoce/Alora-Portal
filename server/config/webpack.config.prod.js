@@ -7,25 +7,25 @@ const baseConfig = require("./webpack.config");
 const {PROJECT_ROOT} = require("./env");
 
 module.exports = merge(baseConfig, {
-    mode: "production",
-    plugins: [
-        new HashedModuleIdsPlugin({
-            context: resolve(PROJECT_ROOT, "src"),
-            hashFunction: "sha256",
-            hashDigest: "hex",
-            hashDigestLength: 20
-        }),
+  mode: "production",
+  plugins: [
+    new HashedModuleIdsPlugin({
+      context: resolve(PROJECT_ROOT, "src"),
+      hashFunction: "sha256",
+      hashDigest: "hex",
+      hashDigestLength: 20
+    }),
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false
+      }),
+      new OptimizeCSSAssetsPlugin()
     ],
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                extractComments: false
-            }),
-            new OptimizeCSSAssetsPlugin()
-        ],
-    },
-    performance: {
-        hints: false
-    },
+  },
+  performance: {
+    hints: false
+  },
 });

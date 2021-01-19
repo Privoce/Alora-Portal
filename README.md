@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💻 Papo Portal
+# 💻 Portal
 
 ![](preview.png)
 
@@ -8,7 +8,9 @@
 
 ## 📖 About
 
-- Papo Papo is a tool for managing tabs and internet content. Now you can easily navigate between workspaces and your favorite sites. Use Chat as your home page, and have access to your appointments and notes in a simple and uncomplicated way. Take control of your navigation with Papo Portal
+- Portal is a tool for managing tabs and internet content. Now you can easily navigate between workspaces and your
+  favorite sites. Use Chat as your home page, and have access to your appointments and notes in a simple and
+  uncomplicated way. Take control of your navigation with Portal
 
 ## :white_check_mark: How to Install
 
@@ -37,7 +39,8 @@ yarn
 ## ⚠️ Important
 
 - Use only `npm` or` yarn`, never both!
-- If there is `package-lock.json` and` yarn-lock.json` (`package.json` is totally different from` package-lock.json`) there will be an error in npm by using two dependency managers, delete one .
+- If there is `package-lock.json` and` yarn-lock.json` (`package.json` is totally different from` package-lock.json`)
+  there will be an error in npm by using two dependency managers, delete one .
 
 ## :white_check_mark: To run the application in your browser you must:
 

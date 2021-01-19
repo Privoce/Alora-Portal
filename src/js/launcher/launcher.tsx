@@ -1,16 +1,16 @@
 import React from "react";
-import { Avatar, Button, Input, List, Modal, Popover, Select } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import { IObservableArray, observable, runInAction } from "mobx";
-import { observer } from "mobx-react";
-import { v4 as uuidv4 } from "uuid";
+import {Avatar, Button, Input, List, Modal, Popover, Select} from "antd";
+import {CloseOutlined} from "@ant-design/icons";
+import {IObservableArray, observable, runInAction} from "mobx";
+import {observer} from "mobx-react";
+import {v4 as uuidv4} from "uuid";
 import Scrollbar from "react-scrollbars-custom";
-import { createTab, HistoryEntry } from "./utils";
-import { App, LauncherManager } from "./launcherManager";
+import {createTab, HistoryEntry} from "./utils";
+import {App, LauncherManager} from "./launcherManager";
 import "antd/dist/antd.less";
 import Style from "../../css/launcher.module.less";
 
-const { Option } = Select;
+const {Option} = Select;
 
 const preventImgDrag = (event: React.DragEvent<HTMLImageElement>) =>
   event.preventDefault();
@@ -22,7 +22,7 @@ class Detail extends React.Component<{ app: App }, {}> {
       <div className={Style.detailList}>
         <Scrollbar
           noScrollX={true}
-          style={{ height: "100%", width: "100%" }}
+          style={{height: "100%", width: "100%"}}
           className={Style.fixScrollbar}
         >
           <List
@@ -34,7 +34,7 @@ class Detail extends React.Component<{ app: App }, {}> {
               <List.Item>
                 <List.Item.Meta
                   avatar={
-                    <Avatar src={historyEntry.faviconHref} shape="square" />
+                    <Avatar src={historyEntry.faviconHref} shape="square"/>
                   }
                   title={
                     <a
@@ -95,7 +95,7 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
           placement="right"
           arrowPointAtCenter
           title={`History on ${this.props.app.origin}`}
-          content={<Detail app={this.props.app} />}
+          content={<Detail app={this.props.app}/>}
           visible={this.iconState.isPopoverVisible}
           trigger="click"
           onVisibleChange={this.handleVisibleChange}
@@ -109,7 +109,7 @@ class Icon extends React.Component<{ app: App; onDelete: () => void }, {}> {
           />
         </Popover>
         <div className={Style.closeBtn} onClick={this.handleClose}>
-          <CloseOutlined />
+          <CloseOutlined/>
         </div>
       </div>
     );
@@ -307,7 +307,7 @@ export class Launcher extends React.Component<{}, {}> {
     return (
       <Scrollbar
         noScrollX={true}
-        style={{ height: "100%", width: "100%" }}
+        style={{height: "100%", width: "100%"}}
         className={Style.fixScrollbar}
       >
         <div className={Style.container}>
@@ -328,8 +328,8 @@ export class Launcher extends React.Component<{}, {}> {
           >
             <div className={Style.addBtn}>+</div>
           </div>
-          <DeleteConfirmModal ref={this.deleteConfirmModal} />
-          <AddInputModal ref={this.addInputModal} />
+          <DeleteConfirmModal ref={this.deleteConfirmModal}/>
+          <AddInputModal ref={this.addInputModal}/>
         </div>
       </Scrollbar>
     );
