@@ -20,6 +20,5 @@ i18n
         translation: TRANSLATIONS_ES,
       },
     },
+    fallbackLng: 'en',
   });
-
-i18n.changeLanguage('pt');
