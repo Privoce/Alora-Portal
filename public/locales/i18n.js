@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { TRANSLATIONS_PT } from './pt/translations.js';
 import { TRANSLATIONS_ES } from './es/translations.js';
 import { TRANSLATIONS_EN } from './en/translations.js';
+import { TRANSLATIONS_zh_CN } from './zh_CN/translations.js';
 
 i18n
   .use(LanguageDetector)
@@ -19,6 +20,9 @@ i18n
       es: {
         translation: TRANSLATIONS_ES,
       },
+      zh_CN:{
+        translation: TRANSLATIONS_zh_CN,
+      }
     },
     fallbackLng: 'en',
   });
