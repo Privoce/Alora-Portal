@@ -14,7 +14,7 @@ import loadingGif from '../../assets/loading.gif';
 import '../../css/calendar.less';
 
 import { useTranslation } from 'react-i18next';
-import "./../../../public/locales/i18n";
+import './../../../public/locales/i18n';
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -99,12 +99,16 @@ class Calendar extends React.Component {
       <div className="calendar--container">
         <div className="calendar-footer--container">
           <Row className="header-left">
-            <Button className="arrow--btn" onClick={this.prevDay}>
-              <BsChevronLeft />
-            </Button>
-            <Button className="arrow--btn" onClick={this.nextDay}>
-              <BsChevronRight />
-            </Button>
+            <Button
+              className="arrow--btn"
+              onClick={this.prevDay}
+              icon={<BsChevronLeft />}
+            ></Button>
+            <Button
+              className="arrow--btn"
+              onClick={this.nextDay}
+              icon={<BsChevronRight />}
+            ></Button>
             <div className="header-date">
               <p>{format(this.state.currentDate, 'dd MMMM, yyyy')}</p>
             </div>
@@ -117,7 +121,7 @@ class Calendar extends React.Component {
               style={this.state.buttonStyle}
               onClick={this.currentDay}
             >
-              <Today/>
+              <Today />
             </button>
           </div>
         </div>
@@ -138,7 +142,9 @@ class Calendar extends React.Component {
                       1,
                     )}`}</p>
                     {item.allDay ? (
-                      <p><AllDay/></p>
+                      <p>
+                        <AllDay />
+                      </p>
                     ) : (
                       <p>
                         {format(item.start, 'HH:mm')} -{' '}
@@ -154,16 +160,20 @@ class Calendar extends React.Component {
               </center>
             ) : this.props.user.events.length === 0 ||
               !this.state.todayEvents ? (
-                <p className="event--no-event"><NoUpcomingEvents/></p>
+              <p className="event--no-event">
+                <NoUpcomingEvents />
+              </p>
             ) : null}
           </div>
         ) : (
           <>
-          <div className="sign-in-label"><SigninToPreview/></div>
+            <div className="sign-in-label">
+              <SigninToPreview />
+            </div>
             <div className="social-auth--container">
               <button onClick={this.props.onLogin}>
                 <FaGoogle />
-                <SigninWithGoogle/>
+                <SigninWithGoogle />
               </button>
             </div>
           </>
