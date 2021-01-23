@@ -1,4 +1,4 @@
-export const TRANSLATIONS_EN = {
+export const TRANSLATIONS_zh_CN = {
   WELCOME: '你好 ',
   TODAY: '今天',
   ADD_APP: '添加',
