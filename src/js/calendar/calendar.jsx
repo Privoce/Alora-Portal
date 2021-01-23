@@ -101,12 +101,16 @@ class Calendar extends React.Component {
       <div className="calendar--container">
         <div className="calendar-footer--container">
           <Row className="header-left">
-            <Button className="arrow--btn" onClick={this.prevDay}>
-              <BsChevronLeft />
-            </Button>
-            <Button className="arrow--btn" onClick={this.nextDay}>
-              <BsChevronRight />
-            </Button>
+            <Button
+              className="arrow--btn"
+              onClick={this.prevDay}
+              icon={<BsChevronLeft />}
+            ></Button>
+            <Button
+              className="arrow--btn"
+              onClick={this.nextDay}
+              icon={<BsChevronRight />}
+            ></Button>
             <div className="header-date">
               <p>{format(this.state.currentDate, 'dd MMMM, yyyy')}</p>
             </div>
