@@ -19,6 +19,7 @@ import { BACKEND_URL, OPEN_WEATHER_API_KEY } from './misc/variables';
 
 import { withTranslation } from 'react-i18next';
 import '../locales/i18n';
+import { format } from 'date-fns';
 
 ReactGA.initialize('UA-110173205-3');
 ReactGA.set({ checkProtocolTask: null });
@@ -65,7 +66,7 @@ class Portal extends React.Component {
     });
   };
 
-  async getEventsFromServer() {
+  async getEventsFromServer(date = new Date()) {
     const { user } = this.state;
 
     // if dont have google account connected
@@ -77,13 +78,16 @@ class Portal extends React.Component {
       eventLoading: true,
     });
 
-    const response = await fetch(`${BACKEND_URL}user/calendar`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': user.token,
+    const response = await fetch(
+      `${BACKEND_URL}user/calendar?date=${format(date, 'MM-dd-yyyy')}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': user.token,
+        },
       },
-    });
+    );
 
     this.setState({
       eventLoading: false,
@@ -347,6 +351,7 @@ class Portal extends React.Component {
                 onLogin={this.loginHandle}
                 user={user}
                 eventLoading={eventLoading}
+                getEvents={this.getEventsFromServer}
               />
             </div>
           </div>

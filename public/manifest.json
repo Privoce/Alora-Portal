@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Portal - My Personal Home Page",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Google Calendar Preview, Notes, History, Bookmarks, Tab Management, Time, Weather, Quick Access.",
   "permissions": [
     "tabs",
