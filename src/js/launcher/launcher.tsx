@@ -11,7 +11,7 @@ import 'antd/dist/antd.less';
 import Style from '../../css/launcher.module.less';
 
 import { useTranslation } from 'react-i18next';
-import './../../../public/locales/i18n';
+import '../../locales/i18n';
 
 const { Option } = Select;
 

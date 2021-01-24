@@ -1,8 +1,22 @@
 import HistoryItem = chrome.history.HistoryItem;
 import Tab = chrome.tabs.Tab;
 
-export const getFaviconUrl = (url: string, size: number = 256): string =>
-  `chrome://favicon/size/${size.toString()}@1x/${url}`;
+const faviconUseGoogleCacheList: string[] = [];
+
+const faviconUseNativeList: string[] = [
+  "github.com",
+  "mail.google.com",
+];
+
+export const getFaviconUrl = (url: string, size: number = 128): string => {
+  if (faviconUseGoogleCacheList.includes((new URL(url)).hostname)) {
+    return `https://www.google.com/s2/favicons?sz=${size.toString()}&domain_url=${url}`;
+  } else if (faviconUseNativeList.includes((new URL(url)).hostname)) {
+    return `${new URL(url).origin}/favicon.ico`;
+  } else {
+    return `chrome://favicon/size/${size.toString()}@1x/${url}`;
+  }
+};
 
 export const setStorage = async (key: string, data: any): Promise<void> => await new Promise((
   resolve: (value: void) => void,

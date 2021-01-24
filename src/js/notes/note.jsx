@@ -15,7 +15,7 @@ import '../../css/note.less';
 import addIcon from '../../assets/add.png';
 
 import { useTranslation } from 'react-i18next';
-import './../../../public/locales/i18n';
+import '../../locales/i18n';
 
 class PreviewBlock extends React.Component {
   changeHandler = debounce(value => {

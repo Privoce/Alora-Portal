@@ -14,7 +14,7 @@ import loadingGif from '../../assets/loading.gif';
 import '../../css/calendar.less';
 
 import { useTranslation } from 'react-i18next';
-import "./../../../public/locales/i18n";
+import "../../locales/i18n";
 
 class Calendar extends React.Component {
   constructor(props) {

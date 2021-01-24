@@ -5,7 +5,7 @@ import {
   getStorage,
   getTopOrigins,
   HistoryEntry,
-  setStorage
+  setStorage,
 } from "./utils";
 import HistoryItem = chrome.history.HistoryItem;
 
@@ -20,7 +20,7 @@ export interface App {
 
 export class LauncherManager {
   static initiate = async (): Promise<void> => {
-    const historyEntries: HistoryItem[] = await getHistoryEntries(searchScope);// search scope is one month
+    const historyEntries: HistoryItem[] = await getHistoryEntries(searchScope); // search scope is one month
     const topOrigins: string[] = getTopOrigins(historyEntries, 6);
     await setStorage(originListStorageKey, topOrigins);
     console.log("🚀 Initiated launcher apps.", topOrigins)

@@ -18,7 +18,7 @@ import { Calendar } from './calendar/calendar';
 import { BACKEND_URL, OPEN_WEATHER_API_KEY } from './misc/variables';
 
 import { withTranslation } from 'react-i18next';
-import './../../public/locales/i18n';
+import '../locales/i18n';
 
 ReactGA.initialize('UA-110173205-3');
 ReactGA.set({ checkProtocolTask: null });
