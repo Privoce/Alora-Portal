@@ -103,16 +103,16 @@ class Portal extends React.Component {
       const events = data.events.map(event => ({
         id: event.id,
         start: event.start.date
-          ? new Date(event.start.date)
+          ? new Date(`${event.start.date} 00:00`)
           : new Date(event.start.dateTime),
         end: event.end.date
-          ? new Date(event.end.date)
+          ? new Date(`${event.end.date} 00:00`)
           : new Date(event.end.dateTime),
         title: event.summary,
         allDay: event.start.date ? true : false,
       }));
 
-      // If is the same, dont update the state
+      // If is the same events, dont update the state
       if (JSON.stringify(this.state.events) === JSON.stringify(events)) {
         return;
       }

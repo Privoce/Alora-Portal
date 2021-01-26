@@ -8,13 +8,13 @@ import {
   isTomorrow,
   subDays,
 } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import { FaExternalLinkAlt, FaGoogle } from 'react-icons/fa';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import loadingGif from '../../assets/loading.gif';
 import '../../css/calendar.less';
 
-import { useTranslation } from 'react-i18next';
-import "../../locales/i18n";
+import '../../locales/i18n';
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -33,11 +33,13 @@ class Calendar extends React.Component {
   }
 
   checkEvents(date) {
-    const check = this.props.user.events.find(evento =>
-      isSameDay(evento.start, date),
-    );
-
     this.props.getEvents(date);
+
+    const check = this.props.user.events.find(evento => {
+      if (isSameDay(evento.start, date)) {
+        return true;
+      }
+    });
 
     this.setState({
       todayEvents: check,
@@ -84,13 +86,8 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const isTheSameDay = (date, date2) => {
-      if (date.allDay) return isSameDay(date.end, date2);
-      return isSameDay(date.start, date2);
-    };
-
     const isOngoingEvent = date => {
-      let currentTime = new Date();
+      const currentTime = new Date();
       if (date.allDay && isSameDay(date.end, currentTime)) return true;
       return date.start < currentTime && date.end > currentTime;
     };
@@ -105,18 +102,19 @@ class Calendar extends React.Component {
               className="arrow--btn"
               onClick={this.prevDay}
               icon={<BsChevronLeft />}
-            ></Button>
+            />
             <Button
               className="arrow--btn"
               onClick={this.nextDay}
               icon={<BsChevronRight />}
-            ></Button>
+            />
             <div className="header-date">
               <p>{format(this.state.currentDate, 'dd MMMM, yyyy')}</p>
             </div>
           </Row>
           <div>
             <button
+              type="button"
               className={`calendar--card-today ${
                 !isSameDay(this.state.currentDate, new Date()) && 'not-today'
               }`}
@@ -132,7 +130,7 @@ class Calendar extends React.Component {
           <div className="events--container">
             {this.props.user.events.map(
               item =>
-                isTheSameDay(item, this.state.currentDate) && (
+                isSameDay(item.start, this.state.currentDate) && (
                   <div
                     className={
                       isOngoingEvent(item)
@@ -140,9 +138,9 @@ class Calendar extends React.Component {
                         : 'event--card'
                     }
                   >
-                    <p>{`${item.title[0].toUpperCase()}${item.title.slice(
-                      1,
-                    )}`}</p>
+                    <p>
+                      {`${item.title[0].toUpperCase()}${item.title.slice(1)}`}
+                    </p>
                     {item.allDay ? (
                       <p>
                         <AllDay />
@@ -173,7 +171,7 @@ class Calendar extends React.Component {
               <SigninToPreview />
             </div>
             <div className="social-auth--container">
-              <button onClick={this.props.onLogin}>
+              <button type="button" onClick={this.props.onLogin}>
                 <FaGoogle />
                 <SigninWithGoogle />
               </button>
@@ -185,6 +183,7 @@ class Calendar extends React.Component {
             className="google-calendar-link"
             href="https://calendar.google.com/calendar/u/0/r"
             target="_blank"
+            rel="noreferrer"
           >
             <FaExternalLinkAlt />
           </a>
