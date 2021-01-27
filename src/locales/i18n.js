@@ -20,9 +20,9 @@ i18n
       es: {
         translation: TRANSLATIONS_ES,
       },
-      zh_CN:{
+      zh_CN: {
         translation: TRANSLATIONS_zh_CN,
-      }
+      },
     },
     fallbackLng: 'en',
   });

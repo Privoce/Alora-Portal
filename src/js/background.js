@@ -1,10 +1,10 @@
-import {LauncherManager} from "./launcher/launcherManager";
+import { LauncherManager } from './launcher/launcherManager';
 
 let currentWorkspaceId = null;
 let mainWindowId = null;
 let stashWindowId = null;
 // handle message
-chrome.runtime.onMessage.addListener(((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.currentWorkspaceId) {
     currentWorkspaceId = message.currentWorkspaceId;
   } else if (message.mainWindowId) {
@@ -18,29 +18,42 @@ chrome.runtime.onMessage.addListener(((message, sender, sendResponse) => {
   } else if (message.getStashWindowId) {
     sendResponse(stashWindowId);
   }
-}))
+});
 
 const createOrHighlightPortalTab = async () => {
   const tabs = await new Promise(resolve =>
-    chrome.tabs.query({currentWindow: true}, resolve));
-  if (!tabs[0].pinned || tabs[0].url !== `chrome-extension://${chrome.runtime.id}/portal.html`) {
+    chrome.tabs.query({ currentWindow: true }, resolve),
+  );
+  if (
+    !tabs[0].pinned ||
+    tabs[0].url !== `chrome-extension://${chrome.runtime.id}/portal.html`
+  ) {
     const tab = await new Promise(resolve => {
-      chrome.tabs.create({
-        url: `chrome-extension://${chrome.runtime.id}/portal.html`,
-        pinned: true
-      }, resolve);
+      chrome.tabs.create(
+        {
+          url: `chrome-extension://${chrome.runtime.id}/portal.html`,
+          pinned: true,
+        },
+        resolve,
+      );
     });
     await new Promise(resolve => {
-      chrome.tabs.highlight({
-        tabs: [tab.index]
-      }, resolve);
+      chrome.tabs.highlight(
+        {
+          tabs: [tab.index],
+        },
+        resolve,
+      );
     });
     resolve();
   } else {
     await new Promise(resolve => {
-      chrome.tabs.highlight({
-        tabs: [tabs[0].index]
-      }, resolve);
+      chrome.tabs.highlight(
+        {
+          tabs: [tabs[0].index],
+        },
+        resolve,
+      );
     });
     resolve();
   }

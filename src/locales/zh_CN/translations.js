@@ -20,8 +20,7 @@ export const TRANSLATIONS_zh_CN = {
   X_HOURS_AGO: '小时之前',
   WORKSPACE: '工作组',
   STASH_WINDOW: '备份',
-  STASH_WINDOW_MESSAGE:
-    '此窗口用来备份工作组，关闭会丢失备份.',
+  STASH_WINDOW_MESSAGE: '此窗口用来备份工作组，关闭会丢失备份.',
   YES: '是',
   NO: '否',
   CONFIRM_DELETION: '确认删除',
