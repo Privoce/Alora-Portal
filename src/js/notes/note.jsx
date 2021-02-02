@@ -106,7 +106,7 @@ class PreviewBlock extends React.Component {
           <div
             style={{
               height: '300px',
-              overflow: 'scroll',
+              overflowY: 'scroll',
             }}
           >
             <RichEditor
