@@ -107,6 +107,7 @@ class PreviewBlock extends React.Component {
             style={{
               height: '300px',
               overflowY: 'scroll',
+              paddingRight: 10,
             }}
           >
             <RichEditor
